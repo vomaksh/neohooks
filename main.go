@@ -13,7 +13,11 @@ func main() {
 	r := chi.NewRouter()
 
 	// Middlewares
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+
 	r.Use(middleware.AllowContentType("application/json"))
 	// Middleware for setting header Content-Type to application/json
 	r.Use(func(next http.Handler) http.Handler {
@@ -25,7 +29,7 @@ func main() {
 
 	// Redis client
 	rdb := db.Connect(db.DBOptions{
-		Addr:     "localhost:6379",
+		Addr:     "redis:6379",
 		Name:     0,
 		Password: "",
 	})

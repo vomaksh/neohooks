@@ -6,6 +6,7 @@ import (
 	"github.com/iyorozuya/webhooks/api/controllers"
 	"github.com/iyorozuya/webhooks/api/structs"
 	"github.com/iyorozuya/webhooks/api/webhook"
+	"github.com/iyorozuya/webhooks/api/webhook-request"
 	"log"
 	"net/http"
 )
@@ -15,14 +16,22 @@ type Controller struct {
 }
 
 func Bootstrap(db *redis.Client, r *chi.Mux) {
-	webhookController := controllers.WebhookController{DB: db, Service: webhook.WebhookService{
-		DB: db,
-	}}
+	// Initialize all services
+	webhookRequestService := webhook_request.WebhookRequestService{DB: db}
+	webhookService := webhook.WebhookService{DB: db}
+	// Initialize controllers and DI services respectively
+	webhookController := controllers.WebhookController{WebhookRequestService: webhookRequestService}
+	webhookCoreController := controllers.WebhookCoreController{WebhookService: webhookService}
+	webhookRequestController := controllers.WebhookRequestController{WebhookRequestService: webhookRequestService}
+	// register routes
 	registerRoutes(r, []Controller{
-		Controller{routes: webhookController.Routes},
+		{routes: webhookController.Routes},
+		{routes: webhookCoreController.Routes},
+		{routes: webhookRequestController.Routes},
 	})
 }
 
+// register routes of given controllers
 func registerRoutes(r *chi.Mux, controllers []Controller) {
 	for _, controller := range controllers {
 		for _, route := range controller.routes() {
@@ -31,14 +40,15 @@ func registerRoutes(r *chi.Mux, controllers []Controller) {
 	}
 }
 
+// register route by method
 func registerRouteByMethod(r *chi.Mux, route structs.Route) {
 	switch route.Method {
 	case http.MethodGet:
-		r.Get("/api"+route.Path, route.Handler)
+		r.Get(route.Path, route.Handler)
 	case http.MethodPost:
-		r.Post("/api"+route.Path, route.Handler)
+		r.Post(route.Path, route.Handler)
 	case http.MethodDelete:
-		r.Delete("/api"+route.Path, route.Handler)
+		r.Delete(route.Path, route.Handler)
 	default:
 		log.Fatalf("%s Method not supported\n", route.Method)
 	}

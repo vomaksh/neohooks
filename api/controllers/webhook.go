@@ -4,69 +4,53 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-chi/chi/v5"
-	"github.com/go-redis/redis/v8"
 	"github.com/iyorozuya/webhooks/api/structs"
-	"github.com/iyorozuya/webhooks/api/webhook"
+	webhook_request "github.com/iyorozuya/webhooks/api/webhook-request"
 	"net/http"
+	"strings"
 )
 
-var baseURL string = "/webhook"
-
 type WebhookController struct {
-	DB      *redis.Client
-	Service webhook.WebhookService
+	WebhookRequestService webhook_request.WebhookRequestService
 }
 
-// Routes List of routes supported by webhook controller
 func (wc *WebhookController) Routes() []structs.Route {
 	return []structs.Route{
 		structs.Route{
 			Method:  http.MethodGet,
-			Path:    fmt.Sprintf("%s", baseURL),
-			Handler: wc.list,
+			Path:    fmt.Sprintf("/{id}"),
+			Handler: wc.webhookHandlerFunc,
 		},
 		structs.Route{
 			Method:  http.MethodPost,
-			Path:    fmt.Sprintf("%s", baseURL),
-			Handler: wc.create,
+			Path:    fmt.Sprintf("/{id}"),
+			Handler: wc.webhookHandlerFunc,
 		},
 	}
 }
 
-// GET /webhook - List all webhooks
-func (wc *WebhookController) list(w http.ResponseWriter, r *http.Request) {
-	webhooks, err := wc.Service.List()
-	if err != nil {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode(
-			structs.ErrorResponse{
-				Errors: []string{"Unable to fetch webhooks"},
-			})
-		return
-	}
-	json.NewEncoder(w).Encode(structs.ListWebhooksResponse{
-		Webhooks: webhooks,
-	})
-}
-
-// POST /webhook - Create new webhook
-func (wc *WebhookController) create(w http.ResponseWriter, r *http.Request) {
-	webhook := wc.Service.Save()
-	json.NewEncoder(w).Encode(structs.CreateWebhookResponse{
-		ID: webhook,
-	})
-}
-
-// GET /webhook/:id - Get webhook by id
-func (wc *WebhookController) retrieve(w http.ResponseWriter, r *http.Request) {
-
-}
-
-// DELETE /webhook/:id - Remove existing webhook
-func (wc *WebhookController) remove(w http.ResponseWriter, r *http.Request) {
+func (wc *WebhookController) webhookHandlerFunc(w http.ResponseWriter, r *http.Request) {
 	webhookId := chi.URLParam(r, "id")
-	webhook := wc.Service.Remove(webhookId)
-	json.NewEncoder(w).Encode(structs.RemoveWebhookResponse{
-		ID: webhook,
+	headers := make(map[string]string)
+	// Get webhook-request headers
+	for header, values := range r.Header {
+		headers[header] = strings.Join(values, ", ")
+	}
+	// Get response headers
+	for header, values := range w.Header() {
+		headers[header] = strings.Join(values, ", ")
+	}
+	wc.WebhookRequestService.Save(webhookId, structs.WebhookRequest{
+		ID:           headers["X-Request-Id"],
+		URL:          r.RequestURI,
+		Method:       r.Method,
+		Host:         headers["X-Requested-By"],
+		Size:         string(r.ContentLength),
+		Headers:      headers,
+		QueryStrings: r.URL.Query(),
+		CreatedAt:    headers["X-Request-Time"],
+	})
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"headers": headers,
 	})
 }
