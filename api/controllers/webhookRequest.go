@@ -19,7 +19,7 @@ func (wrc *WebhookRequestController) Routes() []structs.Route {
 	return []structs.Route{
 		structs.Route{
 			Method:  http.MethodGet,
-			Path:    fmt.Sprintf("%s", baseURL),
+			Path:    fmt.Sprintf("%s/{id}", baseURL),
 			Handler: wrc.retrieve,
 		},
 		structs.Route{

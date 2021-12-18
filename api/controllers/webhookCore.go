@@ -19,13 +19,18 @@ func (wc *WebhookCoreController) Routes() []structs.Route {
 	return []structs.Route{
 		structs.Route{
 			Method:  http.MethodGet,
-			Path:    fmt.Sprintf("%s/{id}", baseURL),
+			Path:    fmt.Sprintf("%s", baseURL),
 			Handler: wc.list,
 		},
 		structs.Route{
 			Method:  http.MethodPost,
 			Path:    fmt.Sprintf("%s", baseURL),
 			Handler: wc.create,
+		},
+		structs.Route{
+			Method:  http.MethodGet,
+			Path:    fmt.Sprintf("%s/{id}", baseURL),
+			Handler: wc.retrieve,
 		},
 		structs.Route{
 			Method:  http.MethodDelete,
@@ -42,7 +47,7 @@ func (wc *WebhookCoreController) list(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(422)
 		json.NewEncoder(w).Encode(
 			structs.ErrorResponse{
-				Errors: []string{"Unable to fetch webhooks"},
+				Errors: []string{"unable to fetch webhooks"},
 			})
 		return
 	}
@@ -53,7 +58,14 @@ func (wc *WebhookCoreController) list(w http.ResponseWriter, r *http.Request) {
 
 // POST /webhook - Create new webhook
 func (wc *WebhookCoreController) create(w http.ResponseWriter, r *http.Request) {
-	webhook := wc.WebhookService.Save()
+	webhook, err := wc.WebhookService.Save()
+	if err != nil {
+		json.NewEncoder(w).Encode(
+			structs.ErrorResponse{
+				Errors: []string{"error creating webhook"},
+			},
+		)
+	}
 	json.NewEncoder(w).Encode(structs.CreateWebhookResponse{
 		ID: webhook,
 	})
@@ -61,7 +73,22 @@ func (wc *WebhookCoreController) create(w http.ResponseWriter, r *http.Request) 
 
 // GET /webhook/{id} - Get webhook by id
 func (wc *WebhookCoreController) retrieve(w http.ResponseWriter, r *http.Request) {
-
+	webhookId := chi.URLParam(r, "id")
+	webhook, err := wc.WebhookService.Retrieve(webhookId)
+	if err != nil {
+		w.WriteHeader(422)
+		json.NewEncoder(w).Encode(
+			structs.ErrorResponse{
+				Errors: []string{err.Error()},
+			},
+		)
+	}
+	json.NewEncoder(w).Encode(
+		structs.RetrieveWebhookResponse{
+			ID:       webhook.ID,
+			Requests: webhook.Requests,
+		},
+	)
 }
 
 // DELETE /webhook/{id} - Remove existing webhook
