@@ -14,6 +14,8 @@ func main() {
 
 	// Middlewares
 	r.Use(middleware.Logger)
+	// json, xml, plain text allowed as content type
+	r.Use(middleware.AllowContentType("application/json", "application/xml", "text/plain"))
 
 	// Middleware for setting header Content-Type to application/json
 	r.Use(func(next http.Handler) http.Handler {
