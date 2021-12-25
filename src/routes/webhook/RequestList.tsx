@@ -1,9 +1,9 @@
 import {Box, Button, Flex, HStack, Text, useColorModeValue, VStack} from "@chakra-ui/react";
-import {requests} from "../data/data";
+import {requests} from "../../data/data";
 import {useState} from "react";
 import {HiOutlineClock} from "react-icons/hi";
 import {FaChevronLeft, FaChevronRight} from "react-icons/fa";
-import {webhookRequest} from "../utils";
+import {webhookRequest} from "../../utils";
 
 export const RequestList = () => {
   const [requestsState, setRequests] = useState<typeof requests>(requests);

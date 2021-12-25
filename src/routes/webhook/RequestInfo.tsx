@@ -12,8 +12,8 @@ import {
   VStack
 } from "@chakra-ui/react";
 import {GoChevronRight, GoClippy, GoHome} from "react-icons/go";
-import {currentRequest, requestInfoTabs, webhooks} from "../data/data";
-import {webhookRequest} from "../utils";
+import {currentRequest, requestInfoTabs, webhooks} from "../../data/data";
+import {webhookRequest} from "../../utils";
 import {HiOutlineClock} from "react-icons/hi";
 import {toast} from "react-hot-toast";
 
@@ -91,6 +91,7 @@ const RequestInfoTabs = (props: { request: typeof currentRequest }) => {
           <TabPanel p={0}>
             {request.tab.details.map((d, i) => (
               <Flex
+                key={d.name}
                 borderBottomWidth={i === request.tab.details.length - 1 ? 0 : 2}
                 px={4}
                 py={2}

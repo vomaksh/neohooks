@@ -3,7 +3,7 @@ import {
   Button,
   Center,
   Flex,
-  HStack,
+  HStack, Image,
   Text,
   Tooltip,
   useColorMode,
@@ -11,9 +11,10 @@ import {
 } from "@chakra-ui/react";
 import {IoIosSunny} from "react-icons/io";
 import {BsMoonStarsFill, BsPlusLg} from "react-icons/bs";
-import {webhooks} from "../data/data";
-import {CustomSelect} from "../common/Select";
+import {webhooks} from "../../data/data";
+import {CustomSelect} from "../../common/Select";
 import {toast} from "react-hot-toast";
+import HookImage from "../../assets/hook.svg"
 
 export const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -32,9 +33,10 @@ export const Header = () => {
       backgroundColor={bgColor}
     >
       <Flex flexDirection={"row"}>
-        <Box>
-          <Text fontSize={"xl"}>Neohook</Text>
-        </Box>
+        <Flex flex={"none"}>
+          <Text fontSize={"2xl"}>Neo</Text>
+          <Image src={HookImage} alt={"hook"} ml={-1} mt={-1} />
+        </Flex>
         <Center flex={"1"}>
           <CustomSelect
             placeholder={"Select Webhook"}

@@ -6,11 +6,13 @@ import {RequestInfo} from "./RequestInfo";
 
 export const Webhook = () => {
   return (
-    <Container maxWidth={"container.xl"} padding={0} shadow={"xl"} height={"100vh"}>
-      <Header />
-      <Flex height={"calc(100vh - 4rem)"}>
-        <RequestList />
-        <RequestInfo />
+    <Container maxWidth={"container.xl"} padding={0} height={"100vh"}>
+      <Flex direction={"column"} height={"full"} width={"full"}>
+        <Header />
+        <Flex flex={1}>
+          <RequestList />
+          <RequestInfo />
+        </Flex>
       </Flex>
       <Toaster />
     </Container>
