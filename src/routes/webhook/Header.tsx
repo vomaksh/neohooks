@@ -72,7 +72,7 @@ export const Header = () => {
           <Button
             p={2}
             bgColor={"transparent"}
-            color={colorMode === "light" ? "orange.300" : "blue.50"}
+            color={colorMode === "dark" ? "orange.300" : "blue.400"}
             fontSize={"xl"}
             rounded={"full"}
             onClick={e => {
@@ -80,7 +80,7 @@ export const Header = () => {
               toggleColorMode();
             }}
           >
-            {colorMode === "light" ? <IoIosSunny/> : <BsMoonStarsFill/>}
+            {colorMode === "dark" ? <IoIosSunny /> : <BsMoonStarsFill />}
           </Button>
         </HStack>
       </Flex>
