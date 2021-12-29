@@ -50,10 +50,10 @@ export function Header() {
               borderColor="gray.500"
               backgroundColor={plusButtonBgColor}
               color={plusButtonTextColor}
-              onClick={(e) => {
+              onClick={async (e) => {
                 e.preventDefault();
-                toast.promise(
-                  new Promise((resolve, reject) => {
+                await toast.promise(
+                  new Promise((resolve) => {
                     setTimeout(() => {
                       resolve(10);
                     }, 2000);

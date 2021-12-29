@@ -25,7 +25,8 @@ export function CustomSelect(props: CustomSelectProps) {
               case 'dark':
                 return state.isSelected ? '#4B5563' : '#374151';
               default:
-                return null;
+                // this doesn't matter, only for satisfying the linter
+                return provided.backgroundColor;
             }
           })(),
           '&:focus': {
@@ -41,7 +42,7 @@ export function CustomSelect(props: CustomSelectProps) {
             color: colorMode === 'light' ? '#334155' : provided.color,
           },
         }),
-        control: (provided, state) => ({
+        control: (provided) => ({
           ...provided,
           backgroundColor: colorMode === 'light' ? '#F8FAFC' : '#374151',
           borderWidth: colorMode === 'light' ? 2 : 0,
@@ -54,24 +55,24 @@ export function CustomSelect(props: CustomSelectProps) {
             boxShadow: 'none',
           },
         }),
-        menu: (provided, state) => ({
+        menu: (provided) => ({
           ...provided,
           backgroundColor: colorMode === 'light' ? '#F8FAFC' : '#374151',
           padding: 0,
           margin: '0 2',
           borderRadius: 4,
         }),
-        menuList: (provided, state) => ({
+        menuList: (provided) => ({
           ...provided,
           margin: 0,
           padding: 0,
           borderRadius: 4,
         }),
-        indicatorSeparator: (provided, state) => ({
+        indicatorSeparator: (provided) => ({
           ...provided,
           display: 'none',
         }),
-        dropdownIndicator: (provided, state) => ({
+        dropdownIndicator: (provided) => ({
           ...provided,
           color: colorMode === 'light' ? '#64748B' : '#CBD5E1',
           '&:hover': {

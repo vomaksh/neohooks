@@ -41,9 +41,16 @@ export function RequestBlock(props: RequestBlockProps) {
         if (!request.isActive) {
           setRequests(
             requestsState.map((r) => {
-              if (r.id === request.id) r.isActive = true;
-              else r.isActive = false;
-              return r;
+              if (r.id === request.id) {
+                return {
+                  ...r,
+                  isActive: true,
+                };
+              }
+              return {
+                ...r,
+                isActive: false,
+              };
             })
           );
         }
