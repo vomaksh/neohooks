@@ -1,12 +1,12 @@
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-import {Webhook, WebhookRequest} from "../types";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { Webhook, WebhookRequest } from '../types';
 
 export const webhookAPI = createApi({
   reducerPath: 'webhook',
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/",
+    baseUrl: 'http://localhost:5000/api/',
   }),
-  tagTypes: ["webhook"],
+  tagTypes: ['webhook'],
   endpoints: (build) => ({
     createWebhook: build.mutation<Webhook, void>({
       query: () => ({ url: `webhook`, method: 'POST' }),
@@ -24,4 +24,4 @@ export const webhookAPI = createApi({
       query: (id: string) => ({ url: `webhook-request/${id}` }),
     }),
   }),
-})
+});

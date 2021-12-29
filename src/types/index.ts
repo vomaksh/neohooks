@@ -1,7 +1,7 @@
 /* Webhook */
 export interface Webhook {
   id: string;
-  requests?: string[]; /* requests are only received during GET request */
+  requests?: string[] /* requests are only received during GET request */;
 }
 
 /* Webhook Request List */

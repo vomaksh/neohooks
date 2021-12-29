@@ -1,12 +1,12 @@
-import {Container, Flex} from "@chakra-ui/react";
-import {Loader} from "./Loader";
+import { Container, Flex } from '@chakra-ui/react';
+import { Loader } from './Loader';
 
-export const Home = () => {
+export function Home() {
   return (
-    <Container maxWidth={"container.xl"} padding={0} height={"100vh"}>
-      <Flex direction={"column"} height={"full"} width={"full"}>
+    <Container maxWidth="container.xl" padding={0} height="100vh">
+      <Flex direction="column" height="full" width="full">
         <Loader />
       </Flex>
     </Container>
-  )
+  );
 }
