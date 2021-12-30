@@ -13,7 +13,7 @@ export function RequestList() {
         {requestsState.map((request) => (
           <RequestBlock
             key={request.id}
-            isLoading
+            isLoading={false}
             request={request}
             requestsState={requestsState}
             setRequests={setRequests}

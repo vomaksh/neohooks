@@ -4,6 +4,7 @@ import {
   Flex,
   Heading,
   HStack,
+  Spinner,
   Tab,
   TabList,
   TabPanel,
@@ -21,6 +22,21 @@ import { currentRequest, requestInfoTabs, webhooks } from '../../data/data';
 import { webhookRequest } from '../../utils';
 
 export function RequestInfo() {
+  const loading = true;
+  if (loading) {
+    return (
+      <Flex
+        flex={1}
+        bgColor="whiteAlpha.30"
+        padding={4}
+        height="full"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
   return (
     <Box flex={1} bgColor="whiteAlpha.30" padding={4} height="full">
       <VStack width="full" spacing={3}>

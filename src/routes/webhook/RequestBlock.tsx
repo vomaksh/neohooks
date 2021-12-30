@@ -56,7 +56,7 @@ export function RequestBlock(props: RequestBlockProps) {
         }
       }}
       cursor="pointer"
-      shadow="md"
+      shadow="base"
     >
       <HStack spacing={1} width="full">
         <Skeleton height="20px" isLoaded={!isLoading}>

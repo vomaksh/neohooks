@@ -2,7 +2,8 @@ import { Toaster } from 'react-hot-toast';
 import { Container, Flex } from '@chakra-ui/react';
 import { Header } from './Header';
 import { RequestList } from './RequestList';
-import { RequestInfo } from './RequestInfo';
+// import { RequestInfo } from './RequestInfo';
+import { WebhookInfo } from './WebhookInfo';
 
 export function Webhook() {
   return (
@@ -11,7 +12,8 @@ export function Webhook() {
         <Header />
         <Flex flex={1}>
           <RequestList />
-          <RequestInfo />
+          <WebhookInfo />
+          {/* <RequestInfo /> */}
         </Flex>
       </Flex>
       <Toaster />
