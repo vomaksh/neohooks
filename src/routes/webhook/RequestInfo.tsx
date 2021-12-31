@@ -22,7 +22,7 @@ import { currentRequest, requestInfoTabs, webhooks } from '../../data/data';
 import { webhookRequest } from '../../utils';
 
 export function RequestInfo() {
-  const loading = true;
+  const loading = false;
   if (loading) {
     return (
       <Flex
