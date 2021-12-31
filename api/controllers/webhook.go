@@ -3,13 +3,14 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-chi/chi/v5"
-	"github.com/iyorozuya/webhooks/api/structs"
-	webhook_request "github.com/iyorozuya/webhooks/api/webhook-request"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/iyorozuya/neohooks/api/structs"
+	webhook_request "github.com/iyorozuya/neohooks/api/webhook-request"
 )
 
 type WebhookController struct {

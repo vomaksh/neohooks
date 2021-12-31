@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	redis "github.com/go-redis/redis/v8"
-	"github.com/iyorozuya/webhooks/api/structs"
+	"github.com/iyorozuya/neohooks/api/structs"
 	"net/url"
 	"time"
 )

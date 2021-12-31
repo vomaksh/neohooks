@@ -1,0 +1,36 @@
+# Bare minimum docker-compose for deployment
+version: "3"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: DockerfileAPI
+    ports:
+      - "5000:5000"
+    depends_on:
+      - redis
+  ui:
+    build:
+      context: .
+      dockerfile: DockerfileUI
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+  nginx:
+    image: nginx:1.20-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
+    depends_on:
+      - api
+      - ui
+  redis:
+    image: redis:6.2-alpine
+  redisinsight:
+    image: redislabs/redisinsight
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis

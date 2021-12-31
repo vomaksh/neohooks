@@ -1,14 +1,15 @@
 package api
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/go-redis/redis/v8"
-	"github.com/iyorozuya/webhooks/api/controllers"
-	"github.com/iyorozuya/webhooks/api/structs"
-	"github.com/iyorozuya/webhooks/api/webhook"
-	"github.com/iyorozuya/webhooks/api/webhook-request"
 	"log"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-redis/redis/v8"
+	"github.com/iyorozuya/neohooks/api/controllers"
+	"github.com/iyorozuya/neohooks/api/structs"
+	"github.com/iyorozuya/neohooks/api/webhook"
+	webhook_request "github.com/iyorozuya/neohooks/api/webhook-request"
 )
 
 type Controller struct {

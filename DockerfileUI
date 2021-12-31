@@ -1,0 +1,18 @@
+FROM node:fermium-bullseye as builder
+
+WORKDIR /usr/src/app
+
+COPY package.json .
+COPY package-lock.json .
+RUN npm install
+
+FROM node:fermium-alpine
+
+WORKDIR /usr/src/app
+COPY --from=builder /usr/src/app .
+
+# Need to improve this part well
+COPY . .
+
+# Will have builder pattern
+CMD ["npm", "start"]

@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/iyorozuya/webhooks/api"
-	"github.com/iyorozuya/webhooks/api/db"
 	"log"
 	"net/http"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/iyorozuya/neohooks/api"
+	"github.com/iyorozuya/neohooks/api/db"
 )
 
 func main() {
