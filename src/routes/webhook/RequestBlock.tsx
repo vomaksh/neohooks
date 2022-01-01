@@ -13,7 +13,7 @@ interface RequestBlockProps {
 
 export function RequestBlock(props: RequestBlockProps) {
   const { request, requestsState, setRequests, isLoading } = props;
-  const inactiveRequestBgColor = useColorModeValue('gray.50', 'gray.600');
+  const inactiveRequestBgColor = useColorModeValue('white', 'gray.600');
   const activeRequestBgColor = useColorModeValue('gray.50', 'gray.600');
   const activeRequestBorderColor = useColorModeValue('gray.500', 'gray.100');
   const inactiveRequestBorderColor = useColorModeValue('transparent', 'transparent');
