@@ -1,13 +1,4 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  Skeleton,
-  Text,
-  useColorMode,
-  useColorModeValue,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Flex, HStack, Skeleton, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import { HiOutlineClock } from 'react-icons/hi';
 import { Dispatch } from 'react';
 import { WebhookRequestList } from '../../types';
@@ -22,10 +13,10 @@ interface RequestBlockProps {
 
 export function RequestBlock(props: RequestBlockProps) {
   const { request, requestsState, setRequests, isLoading } = props;
-  const { colorMode } = useColorMode();
   const inactiveRequestBgColor = useColorModeValue('gray.50', 'gray.600');
-  const activeRequestBgColor = useColorModeValue('gray.50', 'blue.500');
-  const activeRequestBorderColor = useColorModeValue('gray.500', 'gray.200');
+  const activeRequestBgColor = useColorModeValue('gray.50', 'gray.600');
+  const activeRequestBorderColor = useColorModeValue('gray.500', 'gray.100');
+  const inactiveRequestBorderColor = useColorModeValue('transparent', 'transparent');
   return (
     <VStack
       spacing={1}
@@ -34,8 +25,10 @@ export function RequestBlock(props: RequestBlockProps) {
       borderRadius="base"
       py={1.5}
       px={2}
-      borderWidth={!isLoading && request.isActive && colorMode === 'light' ? 2 : 0}
-      borderColor={activeRequestBorderColor}
+      borderWidth={!isLoading && request.isActive ? 2 : 2}
+      borderColor={
+        request.isActive && !isLoading ? activeRequestBorderColor : inactiveRequestBorderColor
+      }
       onClick={(event) => {
         event.preventDefault();
         if (!request.isActive) {
@@ -73,9 +66,7 @@ export function RequestBlock(props: RequestBlockProps) {
         </Skeleton>
         <Box>
           <Skeleton height="20px" isLoaded={!isLoading}>
-            <Text fontSize="base" fontWeight="bold">
-              #{request.id}
-            </Text>
+            <Text size="sm">#{request.id}</Text>
           </Skeleton>
         </Box>
       </HStack>

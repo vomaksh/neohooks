@@ -6,7 +6,7 @@ const getColorByRequestMethod = (method: string) => {
     case 'GET':
       return 'green.500';
     case 'POST':
-      return 'purple.500';
+      return 'blue.400';
     default:
       return 'gray.500';
   }
