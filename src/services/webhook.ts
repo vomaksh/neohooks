@@ -25,3 +25,5 @@ export const webhookAPI = createApi({
     }),
   }),
 });
+
+export const { useCreateWebhookMutation } = webhookAPI;
