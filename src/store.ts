@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import logger from 'redux-logger';
 import { webhooksSlice } from './features/webhooks/webhooksSlice';
 import { syncToLocalStorage } from './middlewares/syncToLocalStorage';
 import { webhookAPI } from './services/webhook';
@@ -11,7 +12,7 @@ export const store = configureStore({
   devTools: true,
   preloadedState: preloadState(),
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(webhookAPI.middleware).concat(syncToLocalStorage),
+    getDefaultMiddleware().concat(logger).concat(webhookAPI.middleware).concat(syncToLocalStorage),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
