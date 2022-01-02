@@ -3,10 +3,10 @@ import {
   Button,
   Center,
   Flex,
+  Heading,
   HStack,
   Image,
   Progress,
-  Text,
   Tooltip,
   useColorMode,
   useColorModeValue,
@@ -14,64 +14,71 @@ import {
 import { IoIosSunny } from 'react-icons/io';
 import { BsMoonStarsFill, BsPlusLg } from 'react-icons/bs';
 import { toast } from 'react-hot-toast';
-import { useEffect, useState } from 'react';
-import { webhooks } from '../../data/data';
 import { CustomSelect } from '../../common/Select';
 import HookImage from '../../assets/hook.svg';
+import { useGetWebhooksQuery } from '../../services/webhook';
 
 export function Header() {
+  //  Get list of webhooks
+  const { data: webhooks } = useGetWebhooksQuery();
+
+  // Chakra UI hooks for styling purposes
   const { colorMode, toggleColorMode } = useColorMode();
   const bgColor = useColorModeValue('gray.50', 'gray.800');
   const plusButtonBgColor = useColorModeValue('gray.50', 'gray.700');
   const plusButtonTextColor = useColorModeValue('gray.700', 'gray.200');
-  const [loading, setLoading] = useState<boolean>(true);
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(!loading);
-    }, 5000);
-  }, []);
+
   return (
     <>
-      <Box w="full" height={16} px="4" py="3" alignItems="middle" backgroundColor={bgColor}>
+      <Box w="full" height={16} px="4" py="3" backgroundColor={bgColor}>
         <Flex flexDirection="row">
-          <Flex flex="none">
-            <Text fontSize="2xl">Neo</Text>
-            <Image src={HookImage} alt="hook" ml={-1} mt={-1} />
+          <Flex flex="none" alignItems="center">
+            <Heading size="lg" fontWeight="bold">
+              Neo
+            </Heading>
+            <Image src={HookImage} alt="hook" ml={-1} mt={-1} height="42px" />
           </Flex>
           <Center flex="1">
-            <CustomSelect
-              placeholder="Select Webhook"
-              options={webhooks.map((w) => ({ label: w.value, value: w.id }))}
-            />
-            <Tooltip label="Create">
-              <Button
-                ml={2}
-                borderWidth={colorMode === 'light' ? 2 : 0}
-                borderColor="gray.500"
-                backgroundColor={plusButtonBgColor}
-                color={plusButtonTextColor}
-                onClick={async (e) => {
-                  e.preventDefault();
-                  await toast.promise(
-                    new Promise((resolve) => {
-                      setTimeout(() => {
-                        resolve(10);
-                      }, 2000);
-                    }),
-                    {
-                      loading: 'Creating webhook',
-                      success: 'Webhook created successfully 🔥',
-                      error: 'Failed to created webhook :(',
-                    },
-                    {
-                      position: 'bottom-center',
-                    }
-                  );
-                }}
-              >
-                <BsPlusLg />
-              </Button>
-            </Tooltip>
+            {webhooks && (
+              <>
+                <CustomSelect
+                  placeholder="Select Webhook"
+                  options={webhooks.map((w) => ({
+                    label: `Webhook #${w.split('-')[0]}`,
+                    value: w,
+                  }))}
+                />
+                <Tooltip label="Create">
+                  <Button
+                    ml={2}
+                    borderWidth={colorMode === 'light' ? 2 : 0}
+                    borderColor="gray.500"
+                    backgroundColor={plusButtonBgColor}
+                    color={plusButtonTextColor}
+                    onClick={async (e) => {
+                      e.preventDefault();
+                      await toast.promise(
+                        new Promise((resolve) => {
+                          setTimeout(() => {
+                            resolve(10);
+                          }, 2000);
+                        }),
+                        {
+                          loading: 'Creating webhook',
+                          success: 'Webhook created successfully 🔥',
+                          error: 'Failed to created webhook :(',
+                        },
+                        {
+                          position: 'bottom-center',
+                        }
+                      );
+                    }}
+                  >
+                    <BsPlusLg />
+                  </Button>
+                </Tooltip>
+              </>
+            )}
           </Center>
           <HStack spacing={2}>
             <Button
@@ -90,7 +97,7 @@ export function Header() {
           </HStack>
         </Flex>
       </Box>
-      <Progress colorScheme="gray" height="2px" size="xs" isIndeterminate={loading} value={100} />
+      <Progress colorScheme="gray" height="2px" size="xs" isIndeterminate={false} value={100} />
     </>
   );
 }

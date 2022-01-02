@@ -95,7 +95,7 @@ export function CustomSelect(props: CustomSelectProps) {
         }),
         container: (provided) => ({
           ...provided,
-          width: 200,
+          width: 220,
         }),
       }}
     />

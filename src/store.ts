@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
-import { webhooksSlice } from './features/webhooks/webhooksSlice';
+import { webhooksSlice } from './features/webhooks/webhooks';
 import { syncToLocalStorage } from './middlewares/syncToLocalStorage';
 import { webhookAPI } from './services/webhook';
 

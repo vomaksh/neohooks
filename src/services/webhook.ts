@@ -8,11 +8,17 @@ export const webhookAPI = createApi({
   }),
   tagTypes: ['webhook'],
   endpoints: (build) => ({
+    getWebhooks: build.query<string[], void>({
+      queryFn: (_, { getState }) => {
+        const { webhooks } = getState() as { webhooks: string[] };
+        return { data: webhooks };
+      },
+    }),
     createWebhook: build.mutation<Webhook, void>({
       query: () => ({ url: `webhook`, method: 'POST' }),
     }),
-    findOrCreateWebhook: build.mutation<Webhook, string>({
-      query: (id: string) => ({ url: `webhook/${id}`, method: 'POST' }),
+    findOrCreateWebhook: build.query<Webhook, string>({
+      query: (id: string) => ({ url: `webhook/${id}`, method: 'GET' }),
     }),
     getWebhook: build.query<Webhook, string>({
       query: (id: string) => ({ url: `webhook/${id}` }),
@@ -26,4 +32,4 @@ export const webhookAPI = createApi({
   }),
 });
 
-export const { useCreateWebhookMutation } = webhookAPI;
+export const { useCreateWebhookMutation, useGetWebhooksQuery } = webhookAPI;

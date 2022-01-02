@@ -3,7 +3,7 @@ import { QueryStatus } from '@reduxjs/toolkit/dist/query';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { webhooksActions } from '../../features/webhooks/webhooksSlice';
+import { webhooksActions } from '../../features/webhooks/webhooks';
 import { useCreateWebhookMutation } from '../../services/webhook';
 import { RootState } from '../../store';
 import { Loader } from './Loader';
