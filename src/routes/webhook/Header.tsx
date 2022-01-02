@@ -14,7 +14,8 @@ import {
 import { IoIosSunny } from 'react-icons/io';
 import { BsMoonStarsFill, BsPlusLg } from 'react-icons/bs';
 import { toast } from 'react-hot-toast';
-import { CustomSelect } from '../../common/Select';
+import { useNavigate } from 'react-router-dom';
+import { CustomSelect, Option } from '../../common/Select';
 import HookImage from '../../assets/hook.svg';
 import { useCreateWebhookMutation, useGetWebhooksQuery } from '../../services/webhook';
 
@@ -24,6 +25,9 @@ export function Header() {
 
   // Mutations
   const [createWebhook] = useCreateWebhookMutation();
+
+  // navigate hook
+  const navigate = useNavigate();
 
   // Chakra UI hooks for styling purposes
   const { colorMode, toggleColorMode } = useColorMode();
@@ -50,6 +54,9 @@ export function Header() {
                     label: `Webhook #${w.split('-')[0]}`,
                     value: w,
                   }))}
+                  onChange={(newValue) => {
+                    navigate(`/${(newValue as Option).value}`);
+                  }}
                 />
                 <Tooltip label="Create">
                   <Button

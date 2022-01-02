@@ -1,19 +1,27 @@
-import Select from 'react-select';
+import Select, { ActionMeta, OnChangeValue } from 'react-select';
 import { useColorMode } from '@chakra-ui/react';
 
+export type Option = {
+  label: string;
+  value: string;
+};
+
 interface CustomSelectProps {
-  options: { label: string; value: string }[];
+  options: Option[];
   placeholder: string;
+  // eslint-disable-next-line no-unused-vars
+  onChange: (newValue: OnChangeValue<Option, boolean>, actionMeta: ActionMeta<Option>) => void;
 }
 
 export function CustomSelect(props: CustomSelectProps) {
   const { colorMode } = useColorMode();
-  const { options, placeholder } = props;
+  const { options, placeholder, onChange } = props;
   return (
     <Select
       placeholder={placeholder}
       defaultValue={options[0]}
       options={options}
+      onChange={onChange}
       styles={{
         option: (provided, state) => ({
           ...provided,
