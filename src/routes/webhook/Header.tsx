@@ -16,11 +16,14 @@ import { BsMoonStarsFill, BsPlusLg } from 'react-icons/bs';
 import { toast } from 'react-hot-toast';
 import { CustomSelect } from '../../common/Select';
 import HookImage from '../../assets/hook.svg';
-import { useGetWebhooksQuery } from '../../services/webhook';
+import { useCreateWebhookMutation, useGetWebhooksQuery } from '../../services/webhook';
 
 export function Header() {
-  //  Get list of webhooks
+  //  Queries
   const { data: webhooks } = useGetWebhooksQuery();
+
+  // Mutations
+  const [createWebhook] = useCreateWebhookMutation();
 
   // Chakra UI hooks for styling purposes
   const { colorMode, toggleColorMode } = useColorMode();
@@ -58,18 +61,13 @@ export function Header() {
                     onClick={async (e) => {
                       e.preventDefault();
                       await toast.promise(
-                        new Promise((resolve) => {
-                          setTimeout(() => {
-                            resolve(10);
-                          }, 2000);
+                        new Promise((resolve, reject) => {
+                          createWebhook().then(resolve).catch(reject);
                         }),
                         {
                           loading: 'Creating webhook',
                           success: 'Webhook created successfully 🔥',
-                          error: 'Failed to created webhook :(',
-                        },
-                        {
-                          position: 'bottom-center',
+                          error: 'Failed to created webhook 😥',
                         }
                       );
                     }}

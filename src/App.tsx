@@ -1,5 +1,6 @@
 import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import { Webhook } from './routes/webhook';
 import { theme } from './theme';
 import { Home } from './routes/home';
@@ -13,6 +14,7 @@ function App() {
           <Route path="/:id" element={<Webhook />} />
         </Routes>
       </BrowserRouter>
+      <Toaster position="bottom-center" />
     </ChakraProvider>
   );
 }

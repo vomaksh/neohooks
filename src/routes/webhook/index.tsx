@@ -1,4 +1,3 @@
-import { Toaster } from 'react-hot-toast';
 import { Container, Flex } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { Header } from './Header';
@@ -24,7 +23,6 @@ export function Webhook() {
           {loading ? <WebhookInfo /> : <RequestInfo />}
         </Flex>
       </Flex>
-      <Toaster />
     </Container>
   );
 }
