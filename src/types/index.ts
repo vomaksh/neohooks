@@ -1,15 +1,19 @@
+/* Webhook Request Core Information */
+export interface WebhookRequestCoreInfo {
+  id: string;
+  createdAt: string;
+  method: string;
+}
+
 /* Webhook */
 export interface Webhook {
   id: string;
-  requests?: string[] /* requests are only received during GET request */;
+  requests?: WebhookRequestCoreInfo[];
 }
 
 /* Webhook Request List */
-export interface WebhookRequestList {
-  id: string;
+export interface WebhookRequestList extends WebhookRequestCoreInfo {
   isActive: boolean;
-  time: string;
-  method: string;
 }
 
 /* Webhook Request */

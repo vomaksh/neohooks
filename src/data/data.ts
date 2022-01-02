@@ -5,7 +5,7 @@ export const webhooks = [
   { id: 'webhook#4', value: 'Webhook #4' },
 ];
 
-export const requests = [
+export const requestsDummy = [
   { id: 'REQUEST_ID1', isActive: true, time: '1 min ago', method: 'GET' },
   { id: 'REQUEST_ID2', isActive: false, time: '2 min ago', method: 'POST' },
   { id: 'REQUEST_ID3', isActive: false, time: '3 min ago', method: 'POST' },

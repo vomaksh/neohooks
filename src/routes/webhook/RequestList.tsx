@@ -1,20 +1,20 @@
 import { Box, Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { requests } from '../../data/data';
+import { WebhookRequestCoreInfo } from '../../types';
 import { RequestBlock } from './RequestBlock';
 
-export function RequestList() {
-  const [requestsState, setRequests] = useState<typeof requests>([]);
+interface RequestListProps {
+  isLoading: boolean;
+  requests: WebhookRequestCoreInfo[] | undefined;
+}
+
+export function RequestList(props: RequestListProps) {
+  const { isLoading, requests } = props;
+
+  // style hooks
   const bgColor = useColorModeValue('gray.100', 'gray.700');
 
-  useEffect(() => {
-    setTimeout(() => {
-      setRequests(requests);
-    }, 5000);
-  }, []);
-
-  if (requestsState.length === 0) {
+  if (!requests || requests.length === 0) {
     return (
       <Flex
         width={80}
@@ -33,20 +33,9 @@ export function RequestList() {
   }
   return (
     <Flex direction="column" width={80} bgColor={bgColor} px={4} height="full">
-      <VStack flex={1} spacing={4} width="full" py={4}>
-        {requestsState.map((request) => (
-          <RequestBlock
-            key={request.id}
-            isLoading={false}
-            request={request}
-            requestsState={requestsState}
-            setRequests={setRequests}
-          />
-        ))}
-      </VStack>
       <Flex py={2}>
         <Flex alignItems="center">
-          <Button>
+          <Button size="sm">
             <Text>
               <FaChevronLeft />
             </Text>
@@ -54,13 +43,18 @@ export function RequestList() {
         </Flex>
         <Box flex={1} />
         <Flex alignItems="center">
-          <Button>
+          <Button size="sm">
             <Text>
               <FaChevronRight />
             </Text>
           </Button>
         </Flex>
       </Flex>
+      <VStack flex={1} spacing={4} width="full">
+        {requests.map((request) => (
+          <RequestBlock key={request.id} isLoading={isLoading} request={request} />
+        ))}
+      </VStack>
     </Flex>
   );
 }

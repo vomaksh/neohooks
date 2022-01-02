@@ -12,8 +12,8 @@ type CreateWebhookResponse struct {
 
 // RetrieveWebhookResponse Retrieve existing webhook response
 type RetrieveWebhookResponse struct {
-	ID       string   `json:"id"`
-	Requests []string `json:"requests"`
+	ID       string               `json:"id"`
+	Requests []WebhookRequestList `json:"requests"`
 }
 
 // RemoveWebhookResponse Remove existing webhook

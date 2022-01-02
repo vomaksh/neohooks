@@ -1,19 +1,17 @@
-package webhook_request
+package services
 
 import (
-	"context"
 	"fmt"
-	redis "github.com/go-redis/redis/v8"
-	"github.com/iyorozuya/neohooks/api/structs"
 	"net/url"
 	"time"
+
+	redis "github.com/go-redis/redis/v8"
+	"github.com/iyorozuya/neohooks/api/structs"
 )
 
 type WebhookRequestService struct {
 	DB *redis.Client
 }
-
-var ctx context.Context = context.Background()
 
 func (wrs *WebhookRequestService) Retrieve(id string) (*structs.WebhookRequest, error) {
 	wr, err := wrs.DB.HGetAll(ctx, fmt.Sprintf("webhook:request:%s", id)).Result()
@@ -43,6 +41,22 @@ func (wrs *WebhookRequestService) Retrieve(id string) (*structs.WebhookRequest, 
 		QueryStrings: urlQueryStrings,
 		Body:         wr["body"],
 	}, nil
+}
+
+func (wrs *WebhookRequestService) retrieveByIDs(ids []string) (*[]structs.WebhookRequestList, error) {
+	webhookRequests := make([]structs.WebhookRequestList, 0)
+	for _, id := range ids {
+		webhookRequestDetails, err := wrs.DB.HMGet(ctx, fmt.Sprintf("webhook:request:%s", id), "id", "method", "createdAt").Result()
+		if err != nil {
+			return nil, err
+		}
+		webhookRequests = append(webhookRequests, structs.WebhookRequestList{
+			ID:        fmt.Sprintf("%v", webhookRequestDetails[0]),
+			Method:    fmt.Sprintf("%v", webhookRequestDetails[1]),
+			CreatedAt: fmt.Sprintf("%v", webhookRequestDetails[2]),
+		})
+	}
+	return &webhookRequests, nil
 }
 
 func (wrs *WebhookRequestService) Save(webhookId string, webhookRequest structs.WebhookRequest) {

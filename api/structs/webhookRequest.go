@@ -13,3 +13,9 @@ type WebhookRequest struct {
 	QueryStrings url.Values        `json:"queryStrings"`
 	Body         string            `json:"body"`
 }
+
+type WebhookRequestList struct {
+	ID        string `json:"id"`
+	Method    string `json:"method"`
+	CreatedAt string `json:"createdAt"`
+}

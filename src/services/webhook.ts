@@ -37,7 +37,7 @@ export const webhookAPI = createApi({
       },
       invalidatesTags: ['Webhook'],
     }),
-    findOrCreateWebhook: build.query<Webhook, string>({
+    findWebhook: build.query<Webhook, string>({
       query: (id: string) => ({ url: `webhook/${id}`, method: 'GET' }),
     }),
     getWebhook: build.query<Webhook, string>({
@@ -52,4 +52,4 @@ export const webhookAPI = createApi({
   }),
 });
 
-export const { useCreateWebhookMutation, useGetWebhooksQuery } = webhookAPI;
+export const { useCreateWebhookMutation, useGetWebhooksQuery, useFindWebhookQuery } = webhookAPI;

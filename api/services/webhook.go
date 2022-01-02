@@ -1,19 +1,22 @@
-package webhook
+package services
 
 import (
 	"context"
 	"fmt"
+
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
+	"github.com/iyorozuya/neohooks/api/structs"
 )
 
 type WebhookService struct {
-	DB *redis.Client
+	DB                    *redis.Client
+	WebhookRequestService WebhookRequestService
 }
 
 type Webhook struct {
 	ID       string
-	Requests []string
+	Requests []structs.WebhookRequestList
 }
 
 var ctx context.Context = context.Background()
@@ -46,18 +49,22 @@ func (ws *WebhookService) Retrieve(id string) (*Webhook, error) {
 	if err != nil {
 		return nil, err
 	}
+	webhookRequestsList, err := ws.WebhookRequestService.retrieveByIDs(webhookRequests)
+	if err != nil {
+		return nil, err
+	}
 	if webhook == "" {
 		return nil, fmt.Errorf("%s doesn't exist", id)
 	}
 	return &Webhook{
 		ID:       id,
-		Requests: webhookRequests,
+		Requests: *webhookRequestsList,
 	}, nil
 }
 
 func (ws *WebhookService) Save() (string, error) {
 	webhookId := uuid.Must(uuid.NewRandom()).String()
-	_, err := ws.DB.HSet(context.TODO(), "webhooks", map[string]string{
+	_, err := ws.DB.HSet(ctx, "webhooks", map[string]string{
 		fmt.Sprintf("%s", webhookId): "true",
 	}).Result()
 	return webhookId, err

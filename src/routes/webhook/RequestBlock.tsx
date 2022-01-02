@@ -1,18 +1,16 @@
 import { Box, Flex, HStack, Skeleton, Text, useColorModeValue, VStack } from '@chakra-ui/react';
+import dayjs from 'dayjs';
 import { HiOutlineClock } from 'react-icons/hi';
-import { Dispatch } from 'react';
-import { WebhookRequestList } from '../../types';
+import { WebhookRequestCoreInfo } from '../../types';
 import { webhookRequest } from '../../utils';
 
 interface RequestBlockProps {
-  request: WebhookRequestList;
-  requestsState: WebhookRequestList[];
-  setRequests: Dispatch<any>;
+  request: WebhookRequestCoreInfo;
   isLoading: boolean;
 }
 
 export function RequestBlock(props: RequestBlockProps) {
-  const { request, requestsState, setRequests, isLoading } = props;
+  const { request, isLoading } = props;
   const inactiveRequestBgColor = useColorModeValue('white', 'gray.600');
   const activeRequestBgColor = useColorModeValue('gray.50', 'gray.600');
   const activeRequestBorderColor = useColorModeValue('gray.500', 'gray.100');
@@ -20,33 +18,19 @@ export function RequestBlock(props: RequestBlockProps) {
   return (
     <VStack
       spacing={1}
-      bgColor={request.isActive && !isLoading ? activeRequestBgColor : inactiveRequestBgColor}
+      /* bgColor={request.isActive && !isLoading ? activeRequestBgColor : inactiveRequestBgColor} */
+      bgColor={!isLoading ? activeRequestBgColor : inactiveRequestBgColor}
       width="full"
       borderRadius="base"
       py={1.5}
       px={2}
-      borderWidth={!isLoading && request.isActive ? 2 : 2}
+      borderWidth={2}
       borderColor={
-        request.isActive && !isLoading ? activeRequestBorderColor : inactiveRequestBorderColor
+        /* request.isActive && !isLoading ? activeRequestBorderColor : inactiveRequestBorderColor */
+        !isLoading ? activeRequestBorderColor : inactiveRequestBorderColor
       }
       onClick={(event) => {
         event.preventDefault();
-        if (!request.isActive) {
-          setRequests(
-            requestsState.map((r) => {
-              if (r.id === request.id) {
-                return {
-                  ...r,
-                  isActive: true,
-                };
-              }
-              return {
-                ...r,
-                isActive: false,
-              };
-            })
-          );
-        }
       }}
       cursor="pointer"
       shadow="base"
@@ -66,7 +50,7 @@ export function RequestBlock(props: RequestBlockProps) {
         </Skeleton>
         <Box>
           <Skeleton height="20px" isLoaded={!isLoading}>
-            <Text size="sm">#{request.id}</Text>
+            <Text size="sm">#{request.id.slice(0, 10)}</Text>
           </Skeleton>
         </Box>
       </HStack>
@@ -76,7 +60,7 @@ export function RequestBlock(props: RequestBlockProps) {
           <Box flex="none">
             <HStack spacing={1}>
               <HiOutlineClock />
-              <Text>{request.time}</Text>
+              <Text>{dayjs(request.createdAt).fromNow(true)} ago</Text>
             </HStack>
           </Box>
         </Skeleton>

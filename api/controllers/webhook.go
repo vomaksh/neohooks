@@ -9,12 +9,12 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/iyorozuya/neohooks/api/services"
 	"github.com/iyorozuya/neohooks/api/structs"
-	webhook_request "github.com/iyorozuya/neohooks/api/webhook-request"
 )
 
 type WebhookController struct {
-	WebhookRequestService webhook_request.WebhookRequestService
+	WebhookRequestService services.WebhookRequestService
 }
 
 func (wc *WebhookController) Routes() []structs.Route {

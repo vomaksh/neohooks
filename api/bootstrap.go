@@ -7,9 +7,8 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-redis/redis/v8"
 	"github.com/iyorozuya/neohooks/api/controllers"
+	"github.com/iyorozuya/neohooks/api/services"
 	"github.com/iyorozuya/neohooks/api/structs"
-	"github.com/iyorozuya/neohooks/api/webhook"
-	webhook_request "github.com/iyorozuya/neohooks/api/webhook-request"
 )
 
 type Controller struct {
@@ -18,8 +17,11 @@ type Controller struct {
 
 func Bootstrap(db *redis.Client, r *chi.Mux) {
 	// Initialize all services
-	webhookRequestService := webhook_request.WebhookRequestService{DB: db}
-	webhookService := webhook.WebhookService{DB: db}
+	webhookRequestService := services.WebhookRequestService{DB: db}
+	webhookService := services.WebhookService{
+		DB:                    db,
+		WebhookRequestService: webhookRequestService,
+	}
 	// Initialize controllers and DI services respectively
 	webhookController := controllers.WebhookController{WebhookRequestService: webhookRequestService}
 	webhookCoreController := controllers.WebhookCoreController{WebhookService: webhookService}
