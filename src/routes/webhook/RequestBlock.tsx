@@ -1,5 +1,6 @@
 import { Box, Flex, HStack, Skeleton, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import dayjs from 'dayjs';
+import { MouseEvent } from 'react';
 import { HiOutlineClock } from 'react-icons/hi';
 import { WebhookRequestCoreInfo } from '../../types';
 import { webhookRequest } from '../../utils';
@@ -7,31 +8,31 @@ import { webhookRequest } from '../../utils';
 interface RequestBlockProps {
   request: WebhookRequestCoreInfo;
   isLoading: boolean;
+  currentRequest: number | string;
+  // eslint-disable-next-line no-unused-vars
+  onClick: (event: MouseEvent<HTMLElement>) => any;
 }
 
 export function RequestBlock(props: RequestBlockProps) {
-  const { request, isLoading } = props;
+  const { request, currentRequest, isLoading, onClick } = props;
   const inactiveRequestBgColor = useColorModeValue('white', 'gray.600');
-  const activeRequestBgColor = useColorModeValue('gray.50', 'gray.600');
+  const activeRequestBgColor = useColorModeValue('white', 'gray.600');
   const activeRequestBorderColor = useColorModeValue('gray.500', 'gray.100');
   const inactiveRequestBorderColor = useColorModeValue('transparent', 'transparent');
+  const isRequestActive = request.id === currentRequest;
   return (
     <VStack
       spacing={1}
-      /* bgColor={request.isActive && !isLoading ? activeRequestBgColor : inactiveRequestBgColor} */
-      bgColor={!isLoading ? activeRequestBgColor : inactiveRequestBgColor}
+      bgColor={isRequestActive && !isLoading ? activeRequestBgColor : inactiveRequestBgColor}
       width="full"
       borderRadius="base"
       py={1.5}
       px={2}
       borderWidth={2}
       borderColor={
-        /* request.isActive && !isLoading ? activeRequestBorderColor : inactiveRequestBorderColor */
-        !isLoading ? activeRequestBorderColor : inactiveRequestBorderColor
+        isRequestActive && !isLoading ? activeRequestBorderColor : inactiveRequestBorderColor
       }
-      onClick={(event) => {
-        event.preventDefault();
-      }}
+      onClick={(e) => onClick(e)(request.id)}
       cursor="pointer"
       shadow="base"
     >

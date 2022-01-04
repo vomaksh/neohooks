@@ -37,8 +37,15 @@ export function WebhookInfo() {
             <Heading fontSize="2xl">Webhook URL</Heading>
           </Box>
           <HStack display="flex" alignItems="center" spacing={2}>
-            <Text fontSize="base" bgColor={webhookURLBgColor} py={1} px={3} rounded="base">
-              <pre>{webhookURL}</pre>
+            <Text
+              fontSize="md"
+              bgColor={webhookURLBgColor}
+              py={1}
+              px={3}
+              rounded="base"
+              fontFamily="monospace"
+            >
+              {webhookURL}
             </Text>
             <HStack spacing={2}>
               <Tooltip label="Copy to clipboard">

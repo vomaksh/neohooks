@@ -1,18 +1,38 @@
 import { Box, Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { WebhookRequestCoreInfo } from '../../types';
 import { RequestBlock } from './RequestBlock';
 
 interface RequestListProps {
-  isLoading: boolean;
+  isFetching: boolean;
+  isSuccess: boolean;
   requests: WebhookRequestCoreInfo[] | undefined;
 }
 
 export function RequestList(props: RequestListProps) {
-  const { isLoading, requests } = props;
+  const [currentRequest, setCurrentRequest] = useState<number | string>(-1);
+  const { isFetching, isSuccess, requests } = props;
 
   // style hooks
   const bgColor = useColorModeValue('gray.100', 'gray.700');
+
+  useEffect(() => {
+    if (!isFetching) {
+      if (isSuccess) {
+        if (requests && requests.length > 0) {
+          setCurrentRequest(requests[0].id);
+        }
+      }
+    }
+  }, [isFetching, isSuccess]);
+
+  const requestBlockClickHandler = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
+    return (requestId: number) => {
+      setCurrentRequest(requestId);
+    };
+  };
 
   if (!requests || requests.length === 0) {
     return (
@@ -52,7 +72,13 @@ export function RequestList(props: RequestListProps) {
       </Flex>
       <VStack flex={1} spacing={4} width="full">
         {requests.map((request) => (
-          <RequestBlock key={request.id} isLoading={isLoading} request={request} />
+          <RequestBlock
+            key={request.id}
+            isLoading={isFetching}
+            request={request}
+            currentRequest={currentRequest}
+            onClick={requestBlockClickHandler}
+          />
         ))}
       </VStack>
     </Flex>
