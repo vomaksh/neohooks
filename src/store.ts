@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
-import { webhooksSlice } from './features/webhooks/webhooks';
+import { webhooksSlice } from './features/webhooks';
+import { webhookRequestSlice } from './features/webhookRequest';
 import { syncToLocalStorage } from './middlewares/syncToLocalStorage';
 import { webhookAPI } from './services/webhook';
 
@@ -8,6 +9,7 @@ export const store = configureStore({
   reducer: {
     [webhookAPI.reducerPath]: webhookAPI.reducer,
     [webhooksSlice.name]: webhooksSlice.reducer,
+    [webhookRequestSlice.name]: webhookRequestSlice.reducer,
   },
   devTools: true,
   preloadedState: preloadState(),

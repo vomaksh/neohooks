@@ -1,36 +1,32 @@
 import { Box, Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { MouseEvent } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { webhookRequestActions } from '../../features/webhookRequest';
+import { RootState } from '../../store';
 import { WebhookRequestCoreInfo } from '../../types';
 import { RequestBlock } from './RequestBlock';
 
 interface RequestListProps {
   isFetching: boolean;
-  isSuccess: boolean;
   requests: WebhookRequestCoreInfo[] | undefined;
 }
 
 export function RequestList(props: RequestListProps) {
-  const [currentRequest, setCurrentRequest] = useState<number | string>(-1);
-  const { isFetching, isSuccess, requests } = props;
+  const { isFetching, requests } = props;
+
+  // Redux hooks
+  const currentRequest = useSelector((state: RootState) => state.webhookRequest);
+  const dispatch = useDispatch();
 
   // style hooks
   const bgColor = useColorModeValue('gray.100', 'gray.700');
 
-  useEffect(() => {
-    if (!isFetching) {
-      if (isSuccess) {
-        if (requests && requests.length > 0) {
-          setCurrentRequest(requests[0].id);
-        }
-      }
-    }
-  }, [isFetching, isSuccess]);
-
-  const requestBlockClickHandler = (event: React.MouseEvent<HTMLElement>) => {
+  // change selected request by click
+  const requestBlockClickHandler = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    return (requestId: number) => {
-      setCurrentRequest(requestId);
+    return (requestId: string) => {
+      dispatch(webhookRequestActions.set(requestId));
     };
   };
 
@@ -46,7 +42,7 @@ export function RequestList(props: RequestListProps) {
       >
         <VStack flex="1" py={4}>
           <Spinner size="lg" />
-          <Text fontSize="lg">Waiting for first request</Text>
+          <Text fontSize="md">Waiting for first request</Text>
         </VStack>
       </Flex>
     );
@@ -75,8 +71,8 @@ export function RequestList(props: RequestListProps) {
           <RequestBlock
             key={request.id}
             isLoading={isFetching}
-            request={request}
             currentRequest={currentRequest}
+            request={request}
             onClick={requestBlockClickHandler}
           />
         ))}

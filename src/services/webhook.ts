@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { webhooksActions } from '../features/webhooks/webhooks';
+import { webhooksActions } from '../features/webhooks';
 import { Webhook, WebhookRequest } from '../types';
+import { webhookRequestActions } from '../features/webhookRequest';
 
 export const webhookAPI = createApi({
   reducerPath: 'webhook',
@@ -38,7 +39,26 @@ export const webhookAPI = createApi({
       invalidatesTags: ['Webhook'],
     }),
     findWebhook: build.query<Webhook, string>({
-      query: (id: string) => ({ url: `webhook/${id}`, method: 'GET' }),
+      queryFn: async (webhookId, api, _extraOptions, fetchWithBQ) => {
+        const findWebhookResult = await fetchWithBQ({
+          url: `webhook/${webhookId}`,
+          method: 'GET',
+        });
+        if (findWebhookResult.error) throw findWebhookResult.error;
+        const webhook = findWebhookResult.data as Webhook;
+        if (webhook.requests && webhook.requests.length > 0) {
+          const firstWebhookRequest = webhook.requests[0];
+          api.dispatch(webhookRequestActions.set(firstWebhookRequest.id));
+        }
+        if (findWebhookResult.data) {
+          return {
+            data: webhook,
+          };
+        }
+        return {
+          error: findWebhookResult as FetchBaseQueryError,
+        };
+      },
     }),
     getWebhook: build.query<Webhook, string>({
       query: (id: string) => ({ url: `webhook/${id}` }),

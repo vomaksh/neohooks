@@ -8,16 +8,14 @@ import { useFindWebhookQuery } from '../../services/webhook';
 
 export function Webhook() {
   const params = useParams();
-  const { isLoading, isFetching, isSuccess, data } = useFindWebhookQuery(
-    params.webhookId as string
-  );
+  const { isLoading, isFetching, data } = useFindWebhookQuery(params.webhookId as string);
 
   return (
     <Container maxWidth="container.xl" padding={0} height="100vh">
       <Flex direction="column" height="full" width="full">
         <Header />
         <Flex flex={1}>
-          <RequestList isFetching={isFetching} isSuccess={isSuccess} requests={data?.requests} />
+          <RequestList isFetching={isFetching} requests={data?.requests} />
           {isLoading ? <WebhookInfo /> : <RequestInfo />}
         </Flex>
       </Flex>
