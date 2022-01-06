@@ -33,6 +33,6 @@ export interface WebhookRequest {
 export enum RequestInfoTab {
   DETAILS = 'details',
   HEADERS = 'headers',
-  QUERY_STRINGS = 'queryStrings',
+  QUERY_STRINGS = 'querystring',
   BODY = 'body',
 }

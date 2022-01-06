@@ -19,7 +19,7 @@ export function InfoContainer(props: InfoContainerProps) {
   if (isLoading) {
     return <RequestInfo isLoading={isLoading} selectedRequestId={selectedRequestId} />;
   }
-  if (!isLoading && isFetching) {
+  if (isFetching) {
     return <RequestInfo isLoading={isFetching} selectedRequestId={selectedRequestId} />;
   }
   if (!requests || (requests && requests.length === 0)) {

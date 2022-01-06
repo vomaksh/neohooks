@@ -20,13 +20,14 @@ import { HiOutlineClock } from 'react-icons/hi';
 import { toast } from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { requestInfoTabs } from '../../data/data';
 import { useFindRequestQuery } from '../../services/webhook';
-import { WebhookRequest } from '../../types';
+import { RequestInfoTab, WebhookRequest } from '../../types';
 import {
+  createRequestTabData,
   getColorByRequestMethod,
   getFriendlyWebhookId,
   getFriendlyWebhookRequestId,
+  getRequestInfoTabs,
 } from '../../utils';
 
 interface RequestInfoProps {
@@ -38,15 +39,16 @@ export function RequestInfo(props: RequestInfoProps) {
   const { isLoading, selectedRequestId } = props;
 
   // RTK find webhook request
-  const { isLoading: isFindRequestLoading, data: findRequestData } = useFindRequestQuery(
-    selectedRequestId,
-    { skip: selectedRequestId === '' }
-  );
+  const {
+    isLoading: isFindRequestLoading,
+    isFetching: isFindRequestFetching,
+    data: findRequestData,
+  } = useFindRequestQuery(selectedRequestId, { skip: selectedRequestId === '' });
 
   // Get webhook id via router param
   const params = useParams();
 
-  if (isLoading || isFindRequestLoading) {
+  if (isLoading || isFindRequestLoading || isFindRequestFetching) {
     return (
       <Flex
         flex={1}
@@ -128,41 +130,64 @@ function RequestHeader(props: { request: WebhookRequest }) {
 }
 
 function RequestInfoTabs(props: { request: WebhookRequest }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { request } = props;
   const bgColor = useColorModeValue('transparent', 'gray.700');
-  // const tableBorderColor = useColorModeValue('gray.200', 'gray.650');
+  const detailsTabData = createRequestTabData(RequestInfoTab.DETAILS, request);
+  const headersTabData = createRequestTabData(RequestInfoTab.HEADERS, request);
+  const queryStringData = createRequestTabData(RequestInfoTab.QUERY_STRINGS, request);
+  const bodyData = createRequestTabData(RequestInfoTab.BODY, request);
   return (
     <Box width="full" shadow="lg" rounded="base" bgColor={bgColor}>
       <Tabs>
         <TabList>
-          {requestInfoTabs.map((t) => (
-            <Tab key={t.name}>{t.name}</Tab>
+          {getRequestInfoTabs(request.method).map((tab) => (
+            <Tab key={tab} textTransform="capitalize">
+              {tab}
+            </Tab>
           ))}
         </TabList>
         <TabPanels>
           <TabPanel p={0}>
-            {/*
-            request.tab.details.map((d, i) => (
-              <Flex
-                key={d.name}
-                borderBottomWidth={i === request.tab.details.length - 1 ? 0 : 2}
-                px={4}
-                py={2}
-                borderBottomColor={tableBorderColor}
-              >
-                <Box flex={1}>
-                  <Text>{d.name}</Text>
-                </Box>
-                <Box flex={1}>
-                  <Text>{d.value}</Text>
-                </Box>
-              </Flex>
-            ))
-            */}
+            <RequestInfoTabPanel data={detailsTabData} />
+          </TabPanel>
+          <TabPanel p={0}>
+            <RequestInfoTabPanel data={headersTabData} />
+          </TabPanel>
+          <TabPanel p={0}>
+            <RequestInfoTabPanel data={queryStringData} />
+          </TabPanel>
+          <TabPanel p={0}>
+            <RequestInfoTabPanel data={bodyData} />
           </TabPanel>
         </TabPanels>
       </Tabs>
     </Box>
+  );
+}
+
+function RequestInfoTabPanel(props: { data: Record<string, string> }) {
+  const tableBorderColor = useColorModeValue('gray.200', 'gray.650');
+  const { data } = props;
+  return (
+    <>
+      {Object.keys(data).map((k, i) => (
+        <Flex
+          key={k}
+          borderBottomWidth={i === Object.keys(data).length - 1 ? 0 : 2}
+          px={4}
+          py={2}
+          borderBottomColor={tableBorderColor}
+        >
+          <Box flex={1}>
+            <Text>{k}</Text>
+          </Box>
+          <Box flex={1}>
+            <Text fontFamily="mono" bgColor="gray.100" px={2} py={1} rounded="base" as="span">
+              {data[k]}
+            </Text>
+          </Box>
+        </Flex>
+      ))}
+    </>
   );
 }
