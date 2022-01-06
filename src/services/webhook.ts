@@ -72,4 +72,9 @@ export const webhookAPI = createApi({
   }),
 });
 
-export const { useCreateWebhookMutation, useGetWebhooksQuery, useFindWebhookQuery } = webhookAPI;
+export const {
+  useCreateWebhookMutation,
+  useGetWebhooksQuery,
+  useFindWebhookQuery,
+  useFindRequestQuery,
+} = webhookAPI;

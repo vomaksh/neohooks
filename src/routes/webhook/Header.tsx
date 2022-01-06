@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { CustomSelect, Option } from '../../common/Select';
 import HookImage from '../../assets/hook.svg';
 import { useCreateWebhookMutation, useGetWebhooksQuery } from '../../services/webhook';
+import { getFriendlyWebhookId } from '../../utils';
 
 export function Header() {
   //  Queries
@@ -51,7 +52,7 @@ export function Header() {
                 <CustomSelect
                   placeholder="Select Webhook"
                   options={webhooks.map((w) => ({
-                    label: `Webhook #${w.split('-')[0]}`,
+                    label: getFriendlyWebhookId(w),
                     value: w,
                   }))}
                   onChange={(newValue) => {

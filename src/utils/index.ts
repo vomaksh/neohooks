@@ -1,7 +1,14 @@
+/* Webhook */
+
+// Get short webhook id for display
+export const getFriendlyWebhookId = (id: string): string => {
+  return `Webhook #${id.split('-')[0]}`;
+};
+
 /* Webhook Request */
 
 // Get background color by request method
-const getColorByRequestMethod = (method: string) => {
+export const getColorByRequestMethod = (method: string) => {
   switch (method) {
     case 'GET':
       return 'green.500';
@@ -11,6 +18,8 @@ const getColorByRequestMethod = (method: string) => {
       return 'gray.500';
   }
 };
-export const webhookRequest = {
-  getColorByRequestMethod,
+
+// Get short webhook request id for display
+export const getFriendlyWebhookRequestId = (id: string): string => {
+  return `#${id.slice(0, 10)}`;
 };

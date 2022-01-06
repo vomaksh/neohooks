@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { MouseEvent } from 'react';
 import { HiOutlineClock } from 'react-icons/hi';
 import { WebhookRequestCoreInfo } from '../../types';
-import { webhookRequest } from '../../utils';
+import { getColorByRequestMethod, getFriendlyWebhookRequestId } from '../../utils';
 
 interface RequestBlockProps {
   request: WebhookRequestCoreInfo;
@@ -39,7 +39,7 @@ export function RequestBlock(props: RequestBlockProps) {
       <HStack spacing={1} width="full">
         <Skeleton height="20px" isLoaded={!isLoading}>
           <Box
-            bgColor={webhookRequest.getColorByRequestMethod(request.method)}
+            bgColor={getColorByRequestMethod(request.method)}
             textColor="white"
             rounded="base"
             shadow="sm"
@@ -51,7 +51,7 @@ export function RequestBlock(props: RequestBlockProps) {
         </Skeleton>
         <Box>
           <Skeleton height="20px" isLoaded={!isLoading}>
-            <Text size="sm">#{request.id.slice(0, 10)}</Text>
+            <Text size="sm">{getFriendlyWebhookRequestId(request.id)}</Text>
           </Skeleton>
         </Box>
       </HStack>

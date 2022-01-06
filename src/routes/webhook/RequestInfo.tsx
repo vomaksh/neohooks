@@ -18,12 +18,35 @@ import {
 import { GoChevronRight, GoClippy, GoHome } from 'react-icons/go';
 import { HiOutlineClock } from 'react-icons/hi';
 import { toast } from 'react-hot-toast';
-import { currentRequest, requestInfoTabs, webhooks } from '../../data/data';
-import { webhookRequest } from '../../utils';
+import { useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
+import { requestInfoTabs } from '../../data/data';
+import { useFindRequestQuery } from '../../services/webhook';
+import { WebhookRequest } from '../../types';
+import {
+  getColorByRequestMethod,
+  getFriendlyWebhookId,
+  getFriendlyWebhookRequestId,
+} from '../../utils';
 
-export function RequestInfo() {
-  const loading = false;
-  if (loading) {
+interface RequestInfoProps {
+  isLoading: boolean;
+  selectedRequestId: string;
+}
+
+export function RequestInfo(props: RequestInfoProps) {
+  const { isLoading, selectedRequestId } = props;
+
+  // RTK find webhook request
+  const { isLoading: isFindRequestLoading, data: findRequestData } = useFindRequestQuery(
+    selectedRequestId,
+    { skip: selectedRequestId === '' }
+  );
+
+  // Get webhook id via router param
+  const params = useParams();
+
+  if (isLoading || isFindRequestLoading) {
     return (
       <Flex
         flex={1}
@@ -40,34 +63,35 @@ export function RequestInfo() {
   return (
     <Box flex={1} bgColor="whiteAlpha.30" padding={4} height="full">
       <VStack width="full" spacing={3}>
-        <BreadcrumbNavigation />
-        <RequestHeader request={currentRequest} />
-        <RequestInfoTabs request={currentRequest} />
+        <BreadcrumbNavigation webhookId={params.webhookId} />
+        {findRequestData && <RequestHeader request={findRequestData} />}
+        {findRequestData && <RequestInfoTabs request={findRequestData} />}
       </VStack>
     </Box>
   );
 }
 
-function BreadcrumbNavigation() {
+function BreadcrumbNavigation(props: { webhookId: string | undefined }) {
+  const { webhookId } = props;
   return (
     <HStack width="full">
       <GoHome />
       <GoChevronRight />
       <Heading fontSize="sm" fontWeight="semibold">
-        {webhooks[0].id}
+        {getFriendlyWebhookId(webhookId as string)}
       </Heading>
     </HStack>
   );
 }
 
-function RequestHeader(props: { request: typeof currentRequest }) {
+function RequestHeader(props: { request: WebhookRequest }) {
   const { request } = props;
-  const { onCopy } = useClipboard(request.requestId);
+  const { onCopy } = useClipboard(request.id);
   const clipboardTextColor = useColorModeValue('gray.600', 'gray.100');
   return (
     <Flex width="full" alignItems="center">
       <Box
-        bgColor={webhookRequest.getColorByRequestMethod(request.method)}
+        bgColor={getColorByRequestMethod(request.method)}
         textColor="white"
         rounded="base"
         shadow="base"
@@ -79,7 +103,7 @@ function RequestHeader(props: { request: typeof currentRequest }) {
         </Text>
       </Box>
       <Flex flex={1} ml={2}>
-        <Heading>{request.requestId}</Heading>
+        <Heading>{getFriendlyWebhookRequestId(request.id)}</Heading>
         <Button
           p={0}
           ml={2}
@@ -97,16 +121,17 @@ function RequestHeader(props: { request: typeof currentRequest }) {
       </Flex>
       <HStack spacing={1}>
         <HiOutlineClock />
-        <Text>{request.time}</Text>
+        <Text>{dayjs(request.createdAt).fromNow(true)} ago</Text>
       </HStack>
     </Flex>
   );
 }
 
-function RequestInfoTabs(props: { request: typeof currentRequest }) {
+function RequestInfoTabs(props: { request: WebhookRequest }) {
+  // eslint-disable-next-line no-unused-vars
   const { request } = props;
   const bgColor = useColorModeValue('transparent', 'gray.700');
-  const tableBorderColor = useColorModeValue('gray.200', 'gray.650');
+  // const tableBorderColor = useColorModeValue('gray.200', 'gray.650');
   return (
     <Box width="full" shadow="lg" rounded="base" bgColor={bgColor}>
       <Tabs>
@@ -117,7 +142,8 @@ function RequestInfoTabs(props: { request: typeof currentRequest }) {
         </TabList>
         <TabPanels>
           <TabPanel p={0}>
-            {request.tab.details.map((d, i) => (
+            {/*
+            request.tab.details.map((d, i) => (
               <Flex
                 key={d.name}
                 borderBottomWidth={i === request.tab.details.length - 1 ? 0 : 2}
@@ -132,7 +158,8 @@ function RequestInfoTabs(props: { request: typeof currentRequest }) {
                   <Text>{d.value}</Text>
                 </Box>
               </Flex>
-            ))}
+            ))
+            */}
           </TabPanel>
         </TabPanels>
       </Tabs>
