@@ -24,6 +24,7 @@ export function Home() {
   */
   useEffect(() => {
     if (webhooks.length === 0) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       createWebhook();
     } else {
       navigate(`/${webhooks[0].toString()}`);

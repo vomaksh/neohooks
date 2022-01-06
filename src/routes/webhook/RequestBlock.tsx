@@ -9,8 +9,7 @@ interface RequestBlockProps {
   request: WebhookRequestCoreInfo;
   isLoading: boolean;
   currentRequest: number | string;
-  // eslint-disable-next-line no-unused-vars
-  onClick: (event: MouseEvent<HTMLElement>) => any;
+  onClick: (event: MouseEvent<HTMLElement>) => (id: string) => void;
 }
 
 export function RequestBlock(props: RequestBlockProps) {

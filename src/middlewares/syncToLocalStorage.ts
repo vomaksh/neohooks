@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Middleware } from '@reduxjs/toolkit';
 
 export const syncToLocalStorage: Middleware = (store) => (next) => (action) => {

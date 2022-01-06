@@ -128,7 +128,7 @@ function RequestHeader(props: { request: WebhookRequest }) {
 }
 
 function RequestInfoTabs(props: { request: WebhookRequest }) {
-  // eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { request } = props;
   const bgColor = useColorModeValue('transparent', 'gray.700');
   // const tableBorderColor = useColorModeValue('gray.200', 'gray.650');

@@ -25,16 +25,16 @@ export type AppDispatch = typeof store.dispatch;
   and sync to webhooks slice
 */
 function preloadState() {
-  let webhooks = localStorage.getItem('webhooks');
+  const webhooks: string | null = localStorage.getItem('webhooks');
   if (!webhooks) {
     return { webhooks: [] };
   }
   try {
-    webhooks = JSON.parse(webhooks);
-    if (!Array.isArray(webhooks)) {
+    const webhooksParsed: string[] = JSON.parse(webhooks) as string[];
+    if (!Array.isArray(webhooksParsed)) {
       return { webhooks: [] };
     }
-    return { webhooks };
+    return { webhooks: webhooksParsed };
   } catch (error) {
     return { webhooks: [] };
   }

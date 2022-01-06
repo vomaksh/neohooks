@@ -25,6 +25,14 @@ export interface WebhookRequest {
   size: string;
   createdAt: string;
   headers: Record<string, string>;
-  queryStrings: any;
+  queryStrings: Record<string, string>;
   body: string;
+}
+
+/* Request info tabs */
+export enum RequestInfoTab {
+  DETAILS = 'details',
+  HEADERS = 'headers',
+  QUERY_STRINGS = 'queryStrings',
+  BODY = 'body',
 }

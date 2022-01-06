@@ -1,3 +1,5 @@
+import requestUtils from './request';
+
 /* Webhook */
 
 // Get short webhook id for display
@@ -23,3 +25,6 @@ export const getColorByRequestMethod = (method: string) => {
 export const getFriendlyWebhookRequestId = (id: string): string => {
   return `#${id.slice(0, 10)}`;
 };
+
+/* Request info methods */
+export const { createRequestTabData, getRequestInfoTabs } = requestUtils;

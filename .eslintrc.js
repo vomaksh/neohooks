@@ -3,7 +3,14 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  extends: ['plugin:react/recommended', 'airbnb', 'plugin:prettier/recommended'],
+  plugins: ['react', '@typescript-eslint'],
+  extends: [
+    'airbnb',
+    'airbnb-typescript',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:prettier/recommended',
+  ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
@@ -11,8 +18,8 @@ module.exports = {
     },
     ecmaVersion: 13,
     sourceType: 'module',
+    project: './tsconfig.json',
   },
-  plugins: ['react', '@typescript-eslint'],
   rules: {
     'react/react-in-jsx-scope': 'off',
     'import/prefer-default-export': 'off',
@@ -26,6 +33,11 @@ module.exports = {
         tsx: 'never',
       },
     ],
+    '@typescript-eslint/no-use-before-define': [
+      'error', { 'functions': false },
+    ],
+    '@typescript-eslint/no-throw-literal': 'off',
+    '@typescript-eslint/no-floating-promises': 'off',
   },
   settings: {
     'import/resolver': {
