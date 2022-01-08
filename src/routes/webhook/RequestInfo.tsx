@@ -167,6 +167,7 @@ function RequestInfoTabs(props: { request: WebhookRequest }) {
 
 function RequestInfoTabPanel(props: { data: Record<string, string> }) {
   const tableBorderColor = useColorModeValue('gray.200', 'gray.650');
+  const attributeValueBgColor = useColorModeValue('gray.100', 'gray.600');
   const { data } = props;
   return (
     <>
@@ -182,7 +183,14 @@ function RequestInfoTabPanel(props: { data: Record<string, string> }) {
             <Text>{k}</Text>
           </Box>
           <Box flex={1}>
-            <Text fontFamily="mono" bgColor="gray.100" px={2} py={1} rounded="base" as="span">
+            <Text
+              fontFamily="mono"
+              bgColor={attributeValueBgColor}
+              px={2}
+              py={1}
+              rounded="base"
+              as="span"
+            >
               {data[k]}
             </Text>
           </Box>
