@@ -26,7 +26,7 @@ export function RequestBlock(props: RequestBlockProps) {
   const { request, currentRequest, isLoading, onClick } = props;
   const { colorMode } = useColorMode();
   const inactiveRequestBgColor = useColorModeValue('white', 'gray.600');
-  const activeRequestBgColor = useColorModeValue('white', 'gray.600');
+  const activeRequestBgColor = useColorModeValue('white', 'gray.700');
   const activeRequestBorderColor = useColorModeValue('gray.500', 'gray.100');
   const inactiveRequestBorderColor = useColorModeValue('transparent', 'transparent');
   const isRequestActive = request.id === currentRequest;

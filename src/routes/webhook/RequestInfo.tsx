@@ -133,13 +133,13 @@ function RequestHeader(props: { request: WebhookRequest }) {
 
 function RequestInfoTabs(props: { request: WebhookRequest }) {
   const { request } = props;
-  const bgColor = useColorModeValue('transparent', 'gray.700');
+  const bgColor = useColorModeValue('white', 'gray.700');
   const detailsTabData = createRequestTabData(RequestInfoTab.DETAILS, request);
   const headersTabData = createRequestTabData(RequestInfoTab.HEADERS, request);
   const queryStringData = createRequestTabData(RequestInfoTab.QUERY_STRINGS, request);
   const bodyData = createRequestTabData(RequestInfoTab.BODY, request);
   return (
-    <Box width="full" shadow="lg" rounded="base" bgColor={bgColor}>
+    <Box width="full" shadow="md" rounded="base" bgColor={bgColor}>
       <Tabs>
         <TabList>
           {getRequestInfoTabs(request.method).map((tab) => (
@@ -159,7 +159,7 @@ function RequestInfoTabs(props: { request: WebhookRequest }) {
             <RequestInfoTabPanel data={queryStringData} />
           </TabPanel>
           <TabPanel p={0}>
-            <RequestInfoTabPanel data={bodyData} />
+            <RequestInfoBodyTabPanel data={bodyData.body} />
           </TabPanel>
         </TabPanels>
       </Tabs>
@@ -168,22 +168,35 @@ function RequestInfoTabs(props: { request: WebhookRequest }) {
 }
 
 function RequestInfoTabPanel(props: { data: Record<string, string> }) {
-  const tableBorderColor = useColorModeValue('gray.200', 'gray.650');
   const attributeValueBgColor = useColorModeValue('gray.100', 'gray.600');
   const { data } = props;
+  if (Object.keys(data).length === 0) {
+    return (
+      <Flex width="full" alignItems="center" height={50}>
+        <Text px={4} py={2} fontWeight="medium" fontFamily="mono">
+          No content
+        </Text>
+      </Flex>
+    );
+  }
   return (
-    <Table size="sm">
+    <Table size="sm" variant="unstyled">
       <Tbody>
-        {Object.keys(data).map((k, i) => (
-          <Tr
-            key={k}
-            borderBottomWidth={i === Object.keys(data).length - 1 ? 0 : 2}
-            borderBottomColor={tableBorderColor}
-          >
-            <Td>
+        {Object.keys(data).map((k) => (
+          <Tr key={k}>
+            <Td whiteSpace="nowrap">
               <Text>{k}</Text>
             </Td>
-            <Td>
+            <Td
+              whiteSpace="nowrap"
+              textOverflow="ellipsis"
+              overflow="hidden"
+              maxWidth="30rem"
+              _hover={{
+                overflow: 'auto',
+                whiteSpace: 'normal',
+              }}
+            >
               <Text
                 fontFamily="mono"
                 bgColor={attributeValueBgColor}
@@ -199,5 +212,25 @@ function RequestInfoTabPanel(props: { data: Record<string, string> }) {
         ))}
       </Tbody>
     </Table>
+  );
+}
+
+function RequestInfoBodyTabPanel(props: { data: string }) {
+  const { data } = props;
+  if (data.trim() === '') {
+    return (
+      <Flex width="full" alignItems="center" height={50}>
+        <Text px={4} py={2} fontWeight="medium" fontFamily="mono">
+          No content
+        </Text>
+      </Flex>
+    );
+  }
+  return (
+    <Box px={4} py={2}>
+      <Text fontFamily="mono" fontSize="sm">
+        {data}
+      </Text>
+    </Box>
   );
 }
