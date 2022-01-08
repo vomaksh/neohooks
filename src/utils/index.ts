@@ -13,11 +13,11 @@ export const getFriendlyWebhookId = (id: string): string => {
 export const getColorByRequestMethod = (method: string) => {
   switch (method) {
     case 'GET':
-      return 'green.500';
+      return 'green';
     case 'POST':
-      return 'blue.400';
+      return 'blue';
     default:
-      return 'gray.500';
+      return 'gray';
   }
 };
 

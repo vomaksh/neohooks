@@ -1,4 +1,14 @@
-import { Box, Flex, HStack, Skeleton, Text, useColorModeValue, VStack } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  HStack,
+  Skeleton,
+  Tag,
+  Text,
+  useColorMode,
+  useColorModeValue,
+  VStack,
+} from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import { MouseEvent } from 'react';
 import { HiOutlineClock } from 'react-icons/hi';
@@ -14,6 +24,7 @@ interface RequestBlockProps {
 
 export function RequestBlock(props: RequestBlockProps) {
   const { request, currentRequest, isLoading, onClick } = props;
+  const { colorMode } = useColorMode();
   const inactiveRequestBgColor = useColorModeValue('white', 'gray.600');
   const activeRequestBgColor = useColorModeValue('white', 'gray.600');
   const activeRequestBorderColor = useColorModeValue('gray.500', 'gray.100');
@@ -37,16 +48,13 @@ export function RequestBlock(props: RequestBlockProps) {
     >
       <HStack spacing={1} width="full">
         <Skeleton height="20px" isLoaded={!isLoading}>
-          <Box
-            bgColor={getColorByRequestMethod(request.method)}
-            textColor="white"
-            rounded="base"
-            shadow="sm"
-            px={2}
-            py={0.5}
+          <Tag
+            variant={colorMode === 'light' ? 'solid' : 'subtle'}
+            colorScheme={getColorByRequestMethod(request.method)}
+            shadow="base"
           >
-            <Text fontSize="sm">{request.method}</Text>
-          </Box>
+            {request.method}
+          </Tag>
         </Skeleton>
         <Box>
           <Skeleton height="20px" isLoaded={!isLoading}>

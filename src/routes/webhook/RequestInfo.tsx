@@ -6,12 +6,18 @@ import {
   HStack,
   Spinner,
   Tab,
+  Table,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
+  Tag,
+  Tbody,
+  Td,
   Text,
+  Tr,
   useClipboard,
+  useColorMode,
   useColorModeValue,
   VStack,
 } from '@chakra-ui/react';
@@ -90,20 +96,16 @@ function RequestHeader(props: { request: WebhookRequest }) {
   const { request } = props;
   const { onCopy } = useClipboard(request.id);
   const clipboardTextColor = useColorModeValue('gray.600', 'gray.100');
+  const { colorMode } = useColorMode();
   return (
     <Flex width="full" alignItems="center">
-      <Box
-        bgColor={getColorByRequestMethod(request.method)}
-        textColor="white"
-        rounded="base"
+      <Tag
+        variant={colorMode === 'light' ? 'solid' : 'subtle'}
+        colorScheme={getColorByRequestMethod(request.method)}
         shadow="base"
-        px={2}
-        py={0.5}
       >
-        <Text fontSize="sm" fontWeight="medium">
-          {request.method}
-        </Text>
-      </Box>
+        {request.method}
+      </Tag>
       <Flex flex={1} ml={2}>
         <Heading>{getFriendlyWebhookRequestId(request.id)}</Heading>
         <Button
@@ -170,32 +172,32 @@ function RequestInfoTabPanel(props: { data: Record<string, string> }) {
   const attributeValueBgColor = useColorModeValue('gray.100', 'gray.600');
   const { data } = props;
   return (
-    <>
-      {Object.keys(data).map((k, i) => (
-        <Flex
-          key={k}
-          borderBottomWidth={i === Object.keys(data).length - 1 ? 0 : 2}
-          px={4}
-          py={2}
-          borderBottomColor={tableBorderColor}
-        >
-          <Box flex={1}>
-            <Text>{k}</Text>
-          </Box>
-          <Box flex={1}>
-            <Text
-              fontFamily="mono"
-              bgColor={attributeValueBgColor}
-              px={2}
-              py={1}
-              rounded="base"
-              as="span"
-            >
-              {data[k]}
-            </Text>
-          </Box>
-        </Flex>
-      ))}
-    </>
+    <Table size="sm">
+      <Tbody>
+        {Object.keys(data).map((k, i) => (
+          <Tr
+            key={k}
+            borderBottomWidth={i === Object.keys(data).length - 1 ? 0 : 2}
+            borderBottomColor={tableBorderColor}
+          >
+            <Td>
+              <Text>{k}</Text>
+            </Td>
+            <Td>
+              <Text
+                fontFamily="mono"
+                bgColor={attributeValueBgColor}
+                px={2}
+                py={1}
+                rounded="base"
+                as="span"
+              >
+                {data[k]}
+              </Text>
+            </Td>
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
   );
 }
