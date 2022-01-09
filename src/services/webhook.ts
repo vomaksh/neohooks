@@ -7,7 +7,7 @@ import { webhookRequestActions } from '../features/webhookRequest';
 export const webhookAPI = createApi({
   reducerPath: 'webhook',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/',
+    baseUrl: '/api/',
   }),
   tagTypes: ['Webhook', 'WebhookRequest'],
   endpoints: (build) => ({

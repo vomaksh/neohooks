@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/:webhookId" element={<Webhook />} />
+          <Route path="/w/:webhookId" element={<Webhook />} />
         </Routes>
       </BrowserRouter>
       <Toaster position="bottom-center" />

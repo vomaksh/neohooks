@@ -56,7 +56,7 @@ export function Header() {
                     value: w,
                   }))}
                   onChange={(newValue) => {
-                    navigate(`/${(newValue as Option).value}`);
+                    navigate(`/w/${(newValue as Option).value}`);
                   }}
                 />
                 <Tooltip label="Create">

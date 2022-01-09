@@ -1,33 +1,38 @@
-# Bare minimum docker-compose for deployment
-version: "3"
+# docker-compose file for local dev (prod file will be added later)
+version: '3'
 services:
-  api:
-    build:
-      context: .
-      dockerfile: DockerfileAPI
-    ports:
-      - "5000:5000"
-    depends_on:
-      - redis
+  redis:
+    image: redis:6.2-alpine
   ui:
-    build:
-      context: .
-      dockerfile: DockerfileUI
-    ports:
-      - "3000:3000"
+    image: "node:fermium-bullseye"
+    user: node
+    working_dir: /home/node/app
+    expose:
+      - 3000
+    volumes:
+      - ./:/home/node/app
+    command: "npm start"
     depends_on:
       - api
+  api:
+    image: golang:1.17
+    working_dir: /app
+    expose:
+      - 5000
+    volumes:
+      - ./:/app
+    command: go run main.go
+    depends_on:
+      - redis
   nginx:
     image: nginx:1.20-alpine
     ports:
       - "8080:80"
     volumes:
-      - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
+      - "./nginx/nginx-dev.conf:/etc/nginx/nginx.conf"
     depends_on:
       - api
       - ui
-  redis:
-    image: redis:6.2-alpine
   redisinsight:
     image: redislabs/redisinsight
     ports:

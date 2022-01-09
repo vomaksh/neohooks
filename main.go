@@ -6,7 +6,6 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
 	"github.com/iyorozuya/neohooks/api"
 	"github.com/iyorozuya/neohooks/api/db"
 )
@@ -16,10 +15,6 @@ func main() {
 
 	// Middlewares
 	r.Use(middleware.Logger)
-	// Allow all origins for now
-	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: []string{"*"},
-	}))
 	// json, xml, plain text allowed as content type
 	r.Use(middleware.AllowContentType("application/json", "application/xml", "text/plain"))
 

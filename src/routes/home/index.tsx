@@ -24,18 +24,18 @@ export function Home() {
     if (webhooks.length === 0) {
       createWebhook();
     } else {
-      navigate(`/${webhooks[0].toString()}`);
+      navigate(`/w/${webhooks[0].toString()}`);
     }
   }, []);
 
   /*
     If mutation status is fullfilled
-    then navigate to /:id path
+    then navigate to /w/:webhookId path
   */
   useEffect(() => {
     if (createWebhookResult.status === QueryStatus.fulfilled) {
       const webhookId = createWebhookResult.data.id;
-      navigate(`/${webhookId}`);
+      navigate(`/w/${webhookId}`);
     }
   }, [createWebhookResult.status]);
 
