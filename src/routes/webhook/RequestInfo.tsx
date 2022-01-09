@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -43,6 +44,7 @@ interface RequestInfoProps {
 
 export function RequestInfo(props: RequestInfoProps) {
   const { isLoading, selectedRequestId } = props;
+  const [currentTab, setCurrentTab] = useState<number>(0);
 
   // RTK find webhook request
   const {
@@ -53,6 +55,11 @@ export function RequestInfo(props: RequestInfoProps) {
 
   // Get webhook id via router param
   const params = useParams();
+
+  // Reset tab index when changing selected request
+  useEffect(() => {
+    setCurrentTab(0);
+  }, [selectedRequestId]);
 
   if (isLoading || isFindRequestLoading || isFindRequestFetching) {
     return (
@@ -73,7 +80,13 @@ export function RequestInfo(props: RequestInfoProps) {
       <VStack width="full" spacing={3}>
         <BreadcrumbNavigation webhookId={params.webhookId} />
         {findRequestData && <RequestHeader request={findRequestData} />}
-        {findRequestData && <RequestInfoTabs request={findRequestData} />}
+        {findRequestData && (
+          <RequestInfoTabs
+            currentTab={currentTab}
+            setCurrentTab={setCurrentTab}
+            request={findRequestData}
+          />
+        )}
       </VStack>
     </Box>
   );
@@ -131,8 +144,12 @@ function RequestHeader(props: { request: WebhookRequest }) {
   );
 }
 
-function RequestInfoTabs(props: { request: WebhookRequest }) {
-  const { request } = props;
+function RequestInfoTabs(props: {
+  request: WebhookRequest;
+  currentTab: number;
+  setCurrentTab: (index: number) => void;
+}) {
+  const { request, currentTab, setCurrentTab } = props;
   const bgColor = useColorModeValue('white', 'gray.700');
   const detailsTabData = createRequestTabData(RequestInfoTab.DETAILS, request);
   const headersTabData = createRequestTabData(RequestInfoTab.HEADERS, request);
@@ -140,7 +157,7 @@ function RequestInfoTabs(props: { request: WebhookRequest }) {
   const bodyData = createRequestTabData(RequestInfoTab.BODY, request);
   return (
     <Box width="full" shadow="md" rounded="base" bgColor={bgColor}>
-      <Tabs>
+      <Tabs index={currentTab} onChange={(i) => setCurrentTab(i)}>
         <TabList>
           {getRequestInfoTabs(request.method).map((tab) => (
             <Tab key={tab} textTransform="capitalize">

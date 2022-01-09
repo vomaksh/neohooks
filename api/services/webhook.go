@@ -45,7 +45,7 @@ func (ws *WebhookService) Retrieve(id string) (*Webhook, error) {
 		return nil, err
 	}
 	// Fetch requests of webhook
-	webhookRequests, err := ws.DB.ZRange(ctx, fmt.Sprintf("webhook:%s:requests", id), 0, -1).Result()
+	webhookRequests, err := ws.DB.ZRevRange(ctx, fmt.Sprintf("webhook:%s:requests", id), 0, -1).Result()
 	if err != nil {
 		return nil, err
 	}
