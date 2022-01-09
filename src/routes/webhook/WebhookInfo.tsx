@@ -13,9 +13,11 @@ import {
 import { toast } from 'react-hot-toast';
 import { GoClippy } from 'react-icons/go';
 import { MdOpenInNew } from 'react-icons/md';
+import { useParams } from 'react-router-dom';
 
 export function WebhookInfo() {
-  const webhookURL = 'https://webhook.site/b9d10e34-b83a-4b2d-9ae0-154d31669fca';
+  const { webhookId } = useParams();
+  const webhookURL = `${window.location.origin}/${webhookId as string}`;
   const { onCopy } = useClipboard(webhookURL);
   const webhookURLBgColor = useColorModeValue('gray.100', 'gray.700');
   return (

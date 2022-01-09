@@ -16,6 +16,7 @@ interface CustomSelectProps {
 export function CustomSelect(props: CustomSelectProps) {
   const { colorMode } = useColorMode();
   const { options, placeholder, onChange } = props;
+  const setOptionColors = optionColor(colorMode);
   return (
     <Select
       placeholder={placeholder}
@@ -26,28 +27,37 @@ export function CustomSelect(props: CustomSelectProps) {
         option: (provided, state) => ({
           ...provided,
           color: colorMode === 'light' ? '#334155' : provided.color,
-          backgroundColor: (() => {
-            switch (colorMode) {
-              case 'light':
-                return state.isSelected ? '#CBD5E1' : provided.backgroundColor;
-              case 'dark':
-                return state.isSelected ? '#4B5563' : '#374151';
-              default:
-                // this doesn't matter, only for satisfying the linter
-                return provided.backgroundColor;
-            }
-          })(),
-          '&:focus': {
-            backgroundColor: colorMode === 'light' ? '#E2E8F0' : '#6B7280',
-            color: colorMode === 'light' ? '#334155' : provided.color,
+          backgroundColor: setOptionColors({
+            isSelected: state.isSelected,
+            lightMode: [
+              '#E2E8F0',
+              state.isFocused ? 'transparent' : (provided.backgroundColor as string),
+            ],
+            darkMode: ['#4B5563', '#374151'],
+          }),
+          '&:focus, &:active': {
+            backgroundColor: setOptionColors({
+              isSelected: state.isSelected,
+              lightMode: ['#E2E8F0', '#E2E8F0'],
+              darkMode: ['#6B7280', '#6B7280'],
+            }),
+            color: setOptionColors({
+              isSelected: state.isSelected,
+              lightMode: ['#334155', '#334155'],
+              darkMode: [provided.color as string, provided.color as string],
+            }),
           },
           '&:hover': {
-            backgroundColor: colorMode === 'light' ? '#E2E8F0' : '#6B7280',
-            color: colorMode === 'light' ? '#334155' : provided.color,
-          },
-          '&:active': {
-            backgroundColor: colorMode === 'light' ? '#E2E8F0' : '#6B7280',
-            color: colorMode === 'light' ? '#334155' : provided.color,
+            backgroundColor: setOptionColors({
+              isSelected: state.isSelected,
+              lightMode: ['#BFDBFE', '#BFDBFE'],
+              darkMode: ['#6B7280', '#6B7280'],
+            }),
+            color: setOptionColors({
+              isSelected: state.isSelected,
+              lightMode: ['#334155', '#334155'],
+              darkMode: [provided.color as string, provided.color as string],
+            }),
           },
         }),
         control: (provided) => ({
@@ -108,4 +118,19 @@ export function CustomSelect(props: CustomSelectProps) {
       }}
     />
   );
+}
+
+interface ColorArgs {
+  isSelected: boolean;
+  lightMode: [string, string];
+  darkMode: [string, string];
+}
+
+function optionColor(colorMode: string) {
+  return ({ isSelected, lightMode, darkMode }: ColorArgs) => {
+    if (colorMode === 'light') {
+      return isSelected ? lightMode[0] : lightMode[1];
+    }
+    return isSelected ? darkMode[0] : darkMode[1];
+  };
 }
