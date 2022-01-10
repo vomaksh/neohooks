@@ -24,7 +24,9 @@ export function Home() {
     if (webhooks.length === 0) {
       createWebhook();
     } else {
-      navigate(`/w/${webhooks[0].toString()}`);
+      navigate(`/w/${webhooks[0].toString()}`, {
+        replace: true,
+      });
     }
   }, []);
 
@@ -35,7 +37,9 @@ export function Home() {
   useEffect(() => {
     if (createWebhookResult.status === QueryStatus.fulfilled) {
       const webhookId = createWebhookResult.data.id;
-      navigate(`/w/${webhookId}`);
+      navigate(`/w/${webhookId}`, {
+        replace: true,
+      });
     }
   }, [createWebhookResult.status]);
 

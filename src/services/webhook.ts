@@ -48,6 +48,7 @@ export const webhookAPI = createApi({
               try {
                 const page = parseInt(params.page, 10) - 1;
                 if (page < 0) return 0;
+                if (Number.isNaN(page)) return 0;
                 return page;
               } catch (err) {
                 return 0;

@@ -2,6 +2,7 @@ import { Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-
 import { MouseEvent } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import { webhookRequestActions } from '../../features/webhookRequest';
 import { RootState } from '../../store';
 import { Pagination, WebhookRequestCoreInfo } from '../../types';
@@ -13,8 +14,15 @@ interface RequestListProps {
   pageMetadata: Pagination;
 }
 
+enum NextPrevButton {
+  PREVIOUS = 'previous',
+  NEXT = 'next',
+}
+
 export function RequestList(props: RequestListProps) {
   const { isFetching, requests, pageMetadata } = props;
+
+  const [searchParam, setSearchParam] = useSearchParams();
 
   // Redux hooks
   const currentRequest = useSelector((state: RootState) => state.webhookRequest);
@@ -31,7 +39,25 @@ export function RequestList(props: RequestListProps) {
     };
   };
 
-  if (!requests || requests.length === 0) {
+  // prev and next button handler
+  const prevNextButtonHandler = (nextPrevButton: NextPrevButton) => {
+    const pageNumber = parseInt(searchParam.get('page') as string, 10);
+    if (nextPrevButton === NextPrevButton.PREVIOUS) {
+      if (pageNumber > 1) {
+        setSearchParam({
+          page: `${pageNumber - 1}`,
+        });
+      }
+    } else if (nextPrevButton === NextPrevButton.NEXT) {
+      if (pageNumber <= Math.floor(pageMetadata.total / pageMetadata.rows)) {
+        setSearchParam({
+          page: `${pageNumber + 1}`,
+        });
+      }
+    }
+  };
+
+  if (!requests || (requests.length === 0 && pageMetadata.page === 1)) {
     return (
       <Flex
         width={80}
@@ -49,10 +75,14 @@ export function RequestList(props: RequestListProps) {
     );
   }
   return (
-    <Flex direction="column" width={80} bgColor={bgColor} px={4} height="full">
+    <Flex direction="column" width={80} bgColor={bgColor} px={3} height="full">
       <Flex py={2} alignItems="center">
         <Flex alignItems="center">
-          <Button size="sm" disabled={pageMetadata.page === 0}>
+          <Button
+            size="sm"
+            disabled={pageMetadata.page === 0}
+            onClick={() => prevNextButtonHandler(NextPrevButton.PREVIOUS)}
+          >
             <Text>
               <FaChevronLeft />
             </Text>
@@ -68,6 +98,7 @@ export function RequestList(props: RequestListProps) {
           <Button
             size="sm"
             disabled={pageMetadata.page === Math.floor(pageMetadata.total / pageMetadata.rows)}
+            onClick={() => prevNextButtonHandler(NextPrevButton.NEXT)}
           >
             <Text>
               <FaChevronRight />
@@ -75,7 +106,7 @@ export function RequestList(props: RequestListProps) {
           </Button>
         </Flex>
       </Flex>
-      <VStack flex={1} spacing={4} width="full">
+      <VStack flex={1} spacing={2} width="full">
         {requests.map((request) => (
           <RequestBlock
             key={request.id}

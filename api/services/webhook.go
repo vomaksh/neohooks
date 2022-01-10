@@ -52,7 +52,7 @@ func (ws *WebhookService) Retrieve(id string, page int64) (*Webhook, error) {
 	webhookRequestsCount := ws.DB.ZCount(ctx, fmt.Sprintf("webhook:%s:requests", id), "-inf", "+inf")
 	webhookRequests, err := ws.DB.ZRevRange(
 		ctx,
-		fmt.Sprintf("webhook:%s:requests", id), rowCount*page, rowCount*(page+1),
+		fmt.Sprintf("webhook:%s:requests", id), rowCount*page, rowCount*(page+1)-1,
 	).Result()
 	if err != nil {
 		return nil, err
