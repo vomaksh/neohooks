@@ -27,6 +27,7 @@ import { HiOutlineClock } from 'react-icons/hi';
 import { toast } from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
+import Scrollbars from 'react-custom-scrollbars-2';
 import { useFindRequestQuery } from '../../services/webhook';
 import { RequestInfoTab, WebhookRequest } from '../../types';
 import {
@@ -76,26 +77,28 @@ export function RequestInfo(props: RequestInfoProps) {
     );
   }
   return (
-    <Flex
-      flex={1}
-      bgColor="whiteAlpha.30"
-      padding={4}
-      height="full"
-      width="full"
-      justifyContent="center"
-    >
-      <VStack width="full" maxWidth="container.xl" spacing={3}>
-        <BreadcrumbNavigation webhookId={params.webhookId} />
-        {findRequestData && <RequestHeader request={findRequestData} />}
-        {findRequestData && (
-          <RequestInfoTabs
-            currentTab={currentTab}
-            setCurrentTab={setCurrentTab}
-            request={findRequestData}
-          />
-        )}
-      </VStack>
-    </Flex>
+    <Scrollbars style={{ height: 'calc(100vh - 4.2em)', width: '100%' }}>
+      <Flex
+        flex={1}
+        bgColor="whiteAlpha.30"
+        padding={4}
+        height="full"
+        width="full"
+        justifyContent="center"
+      >
+        <VStack width="full" maxWidth="container.xl" spacing={3}>
+          <BreadcrumbNavigation webhookId={params.webhookId} />
+          {findRequestData && <RequestHeader request={findRequestData} />}
+          {findRequestData && (
+            <RequestInfoTabs
+              currentTab={currentTab}
+              setCurrentTab={setCurrentTab}
+              request={findRequestData}
+            />
+          )}
+        </VStack>
+      </Flex>
+    </Scrollbars>
   );
 }
 

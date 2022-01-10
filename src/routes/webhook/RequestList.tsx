@@ -1,5 +1,6 @@
 import { Box, Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import { MouseEvent } from 'react';
+import Scrollbars from 'react-custom-scrollbars-2';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
@@ -75,14 +76,7 @@ export function RequestList(props: RequestListProps) {
     );
   }
   return (
-    <Flex
-      direction="column"
-      width={80}
-      bgColor={bgColor}
-      px={3}
-      height="calc(100vh - 4.2em)"
-      overflow="auto"
-    >
+    <Flex direction="column" width={80} bgColor={bgColor}>
       <Flex py={2} alignItems="center">
         <Flex alignItems="center">
           <Button
@@ -113,17 +107,19 @@ export function RequestList(props: RequestListProps) {
           </Button>
         </Flex>
       </Flex>
-      <VStack mb={3} flex={1} spacing={2} width="full">
-        {requests.map((request) => (
-          <RequestBlock
-            key={request.id}
-            isLoading={isFetching}
-            currentRequest={currentRequest}
-            request={request}
-            onClick={requestBlockClickHandler}
-          />
-        ))}
-      </VStack>
+      <Scrollbars style={{ height: 'calc(100vh - 7.2em)', width: '20rem' }}>
+        <VStack px={3} flex={1} spacing={2} width="full" pb={3}>
+          {requests.map((request) => (
+            <RequestBlock
+              key={request.id}
+              isLoading={isFetching}
+              currentRequest={currentRequest}
+              request={request}
+              onClick={requestBlockClickHandler}
+            />
+          ))}
+        </VStack>
+      </Scrollbars>
     </Flex>
   );
 }
