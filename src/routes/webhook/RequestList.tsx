@@ -1,4 +1,4 @@
-import { Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
+import { Box, Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import { MouseEvent } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
@@ -75,7 +75,14 @@ export function RequestList(props: RequestListProps) {
     );
   }
   return (
-    <Flex direction="column" width={80} bgColor={bgColor} px={3} height="full">
+    <Flex
+      direction="column"
+      width={80}
+      bgColor={bgColor}
+      px={3}
+      height="calc(100vh - 4.2em)"
+      overflow="auto"
+    >
       <Flex py={2} alignItems="center">
         <Flex alignItems="center">
           <Button
@@ -106,7 +113,7 @@ export function RequestList(props: RequestListProps) {
           </Button>
         </Flex>
       </Flex>
-      <VStack flex={1} spacing={2} width="full">
+      <VStack mb={3} flex={1} spacing={2} width="full">
         {requests.map((request) => (
           <RequestBlock
             key={request.id}

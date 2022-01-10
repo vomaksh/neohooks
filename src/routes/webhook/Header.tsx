@@ -103,7 +103,7 @@ export function Header() {
           </HStack>
         </Flex>
       </Box>
-      <Progress colorScheme="gray" height="2px" size="xs" isIndeterminate={false} value={100} />
+      <Progress colorScheme="gray" height="0.5" size="xs" isIndeterminate={false} value={100} />
     </>
   );
 }
