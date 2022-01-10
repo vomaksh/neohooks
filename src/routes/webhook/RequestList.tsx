@@ -1,19 +1,20 @@
-import { Box, Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
+import { Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import { MouseEvent } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { webhookRequestActions } from '../../features/webhookRequest';
 import { RootState } from '../../store';
-import { WebhookRequestCoreInfo } from '../../types';
+import { Pagination, WebhookRequestCoreInfo } from '../../types';
 import { RequestBlock } from './RequestBlock';
 
 interface RequestListProps {
   isFetching: boolean;
   requests: WebhookRequestCoreInfo[] | undefined;
+  pageMetadata: Pagination;
 }
 
 export function RequestList(props: RequestListProps) {
-  const { isFetching, requests } = props;
+  const { isFetching, requests, pageMetadata } = props;
 
   // Redux hooks
   const currentRequest = useSelector((state: RootState) => state.webhookRequest);
@@ -49,17 +50,25 @@ export function RequestList(props: RequestListProps) {
   }
   return (
     <Flex direction="column" width={80} bgColor={bgColor} px={4} height="full">
-      <Flex py={2}>
+      <Flex py={2} alignItems="center">
         <Flex alignItems="center">
-          <Button size="sm">
+          <Button size="sm" disabled={pageMetadata.page === 0}>
             <Text>
               <FaChevronLeft />
             </Text>
           </Button>
         </Flex>
-        <Box flex={1} />
+        <Flex flex={1} justifyContent="center">
+          <Text fontSize="sm">Page {pageMetadata.page + 1}</Text>
+          <Text fontSize="sm" ml={1}>
+            ({pageMetadata.total} requests)
+          </Text>
+        </Flex>
         <Flex alignItems="center">
-          <Button size="sm">
+          <Button
+            size="sm"
+            disabled={pageMetadata.page === Math.floor(pageMetadata.total / pageMetadata.rows)}
+          >
             <Text>
               <FaChevronRight />
             </Text>

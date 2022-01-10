@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { webhooksActions } from '../features/webhooks';
-import { Webhook, WebhookRequest } from '../types';
+import { Webhook, WebhookRequest, WebhookWithDetails } from '../types';
 import { webhookRequestActions } from '../features/webhookRequest';
 
 export const webhookAPI = createApi({
@@ -38,14 +38,25 @@ export const webhookAPI = createApi({
       },
       invalidatesTags: ['Webhook'],
     }),
-    findWebhook: build.query<Webhook, string>({
-      queryFn: async (webhookId, api, _extraOptions, fetchWithBQ) => {
+    findWebhook: build.query<WebhookWithDetails, { webhookId: string; page: string }>({
+      queryFn: async (params, api, _extraOptions, fetchWithBQ) => {
         const findWebhookResult = await fetchWithBQ({
-          url: `webhook/${webhookId}`,
+          url: `webhook/${params.webhookId}`,
           method: 'GET',
+          params: {
+            page: (() => {
+              try {
+                const page = parseInt(params.page, 10) - 1;
+                if (page < 0) return 0;
+                return page;
+              } catch (err) {
+                return 0;
+              }
+            })(),
+          },
         });
         if (findWebhookResult.error) throw findWebhookResult.error;
-        const webhook = findWebhookResult.data as Webhook;
+        const webhook = findWebhookResult.data as WebhookWithDetails;
         if (webhook.requests && webhook.requests.length > 0) {
           const firstWebhookRequest = webhook.requests[0];
           api.dispatch(webhookRequestActions.set(firstWebhookRequest.id));

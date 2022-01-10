@@ -11,6 +11,14 @@ export interface Webhook {
   requests?: WebhookRequestCoreInfo[];
 }
 
+export interface WebhookWithDetails {
+  id: string;
+  requests: WebhookRequestCoreInfo[];
+  page: number;
+  total: number;
+  rows: number;
+}
+
 /* Webhook Request List */
 export interface WebhookRequestList extends WebhookRequestCoreInfo {
   isActive: boolean;
@@ -35,4 +43,11 @@ export enum RequestInfoTab {
   HEADERS = 'headers',
   QUERY_STRINGS = 'querystring',
   BODY = 'body',
+}
+
+/* Pagination */
+export interface Pagination {
+  page: number;
+  total: number;
+  rows: number;
 }
