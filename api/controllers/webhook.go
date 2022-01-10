@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -19,14 +18,14 @@ type WebhookController struct {
 
 func (wc *WebhookController) Routes() []structs.Route {
 	return []structs.Route{
-		structs.Route{
+		{
 			Method:  http.MethodGet,
-			Path:    fmt.Sprintf("/{id}"),
+			Path:    "/{id}",
 			Handler: wc.webhookHandlerFunc,
 		},
-		structs.Route{
+		{
 			Method:  http.MethodPost,
-			Path:    fmt.Sprintf("/{id}"),
+			Path:    "/{id}",
 			Handler: wc.webhookHandlerFunc,
 		},
 	}

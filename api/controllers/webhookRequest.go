@@ -18,12 +18,12 @@ type WebhookRequestController struct {
 func (wrc *WebhookRequestController) Routes() []structs.Route {
 	var baseURL string = "/api/webhook-request"
 	return []structs.Route{
-		structs.Route{
+		{
 			Method:  http.MethodGet,
 			Path:    fmt.Sprintf("%s/{id}", baseURL),
 			Handler: wrc.retrieve,
 		},
-		structs.Route{
+		{
 			Method:  http.MethodDelete,
 			Path:    fmt.Sprintf("%s/{id}", baseURL),
 			Handler: wrc.remove,
