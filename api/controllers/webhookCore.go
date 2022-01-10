@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/iyorozuya/neohooks/api/services"
@@ -75,7 +76,11 @@ func (wc *WebhookCoreController) create(w http.ResponseWriter, r *http.Request) 
 // GET /webhook/{id} - Get webhook by id
 func (wc *WebhookCoreController) retrieve(w http.ResponseWriter, r *http.Request) {
 	webhookId := chi.URLParam(r, "id")
-	webhook, err := wc.WebhookService.Retrieve(webhookId)
+	page, err := strconv.Atoi(r.URL.Query().Get("page"))
+	if err != nil {
+		page = 0
+	}
+	webhook, err := wc.WebhookService.Retrieve(webhookId, int64(page))
 	if err != nil {
 		w.WriteHeader(422)
 		json.NewEncoder(w).Encode(
@@ -88,6 +93,9 @@ func (wc *WebhookCoreController) retrieve(w http.ResponseWriter, r *http.Request
 		structs.RetrieveWebhookResponse{
 			ID:       webhook.ID,
 			Requests: webhook.Requests,
+			Page:     webhook.Page,
+			Total:    webhook.Total,
+			Rows:     webhook.Rows,
 		},
 	)
 }
