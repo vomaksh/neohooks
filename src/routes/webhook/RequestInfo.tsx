@@ -76,8 +76,15 @@ export function RequestInfo(props: RequestInfoProps) {
     );
   }
   return (
-    <Box flex={1} bgColor="whiteAlpha.30" padding={4} height="full">
-      <VStack width="full" spacing={3}>
+    <Flex
+      flex={1}
+      bgColor="whiteAlpha.30"
+      padding={4}
+      height="full"
+      width="full"
+      justifyContent="center"
+    >
+      <VStack width="full" maxWidth="container.xl" spacing={3}>
         <BreadcrumbNavigation webhookId={params.webhookId} />
         {findRequestData && <RequestHeader request={findRequestData} />}
         {findRequestData && (
@@ -88,7 +95,7 @@ export function RequestInfo(props: RequestInfoProps) {
           />
         )}
       </VStack>
-    </Box>
+    </Flex>
   );
 }
 

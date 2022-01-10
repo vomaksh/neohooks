@@ -57,7 +57,7 @@ export function RequestList(props: RequestListProps) {
     }
   };
 
-  if (!requests || (requests.length === 0 && pageMetadata.page === 1)) {
+  if (!requests || (requests.length === 0 && pageMetadata.page === 0)) {
     return (
       <Flex
         width={80}

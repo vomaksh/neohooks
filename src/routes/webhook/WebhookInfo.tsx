@@ -21,8 +21,15 @@ export function WebhookInfo() {
   const { onCopy } = useClipboard(webhookURL);
   const webhookURLBgColor = useColorModeValue('gray.100', 'gray.700');
   return (
-    <Flex flex={1} bgColor="whiteAlpha.30" padding={4} height="full">
-      <VStack spacing={4}>
+    <Flex
+      flex={1}
+      bgColor="whiteAlpha.30"
+      height="full"
+      width="full"
+      padding={4}
+      justifyContent="center"
+    >
+      <VStack flex="none" spacing={4} maxWidth="container.xl" width="full">
         <VStack spacing={2} width="full">
           <Heading width="full">Welcome to neohook.app 👋</Heading>
           <VStack spacing={1} width="full">
@@ -34,11 +41,11 @@ export function WebhookInfo() {
             </Text>
           </VStack>
         </VStack>
-        <VStack spacing={2}>
+        <VStack spacing={2} width="full">
           <Box width="full">
             <Heading fontSize="2xl">Webhook URL</Heading>
           </Box>
-          <HStack display="flex" alignItems="center" spacing={2}>
+          <HStack display="flex" alignItems="center" spacing={2} width="full">
             <Text
               fontSize="md"
               bgColor={webhookURLBgColor}
