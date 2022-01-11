@@ -13,8 +13,11 @@ import (
 func main() {
 	r := chi.NewRouter()
 
-	// Middlewares
+	// Base middlewares
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
 	// json, xml, plain text allowed as content type
 	r.Use(middleware.AllowContentType("application/json", "application/xml", "text/plain"))
 

@@ -78,6 +78,7 @@ export function WebhookInfo() {
                   fontSize="base"
                   onClick={(e) => {
                     e.preventDefault();
+                    window.open(webhookURL, '_blank');
                   }}
                 >
                   <MdOpenInNew />

@@ -77,7 +77,7 @@ export function RequestList(props: RequestListProps) {
   }
   return (
     <Flex direction="column" width={80} bgColor={bgColor}>
-      <Flex py={2} alignItems="center">
+      <Flex p={2} alignItems="center">
         <Flex alignItems="center">
           <Button
             size="sm"

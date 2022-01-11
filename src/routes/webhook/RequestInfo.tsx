@@ -16,6 +16,7 @@ import {
   Tbody,
   Td,
   Text,
+  Tooltip,
   Tr,
   useClipboard,
   useColorMode,
@@ -131,20 +132,22 @@ function RequestHeader(props: { request: WebhookRequest }) {
       </Tag>
       <Flex flex={1} ml={2}>
         <Heading>{getFriendlyWebhookRequestId(request.id)}</Heading>
-        <Button
-          p={0}
-          ml={2}
-          color={clipboardTextColor}
-          onClick={(e) => {
-            e.preventDefault();
-            onCopy();
-            toast.success('Copied 👍', {
-              position: 'bottom-center',
-            });
-          }}
-        >
-          <GoClippy />
-        </Button>
+        <Tooltip label="Copy to clipboard">
+          <Button
+            p={0}
+            ml={2}
+            color={clipboardTextColor}
+            onClick={(e) => {
+              e.preventDefault();
+              onCopy();
+              toast.success('Copied 👍', {
+                position: 'bottom-center',
+              });
+            }}
+          >
+            <GoClippy />
+          </Button>
+        </Tooltip>
       </Flex>
       <HStack spacing={1}>
         <HiOutlineClock />

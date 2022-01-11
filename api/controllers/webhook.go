@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -53,11 +54,15 @@ func (wc *WebhookController) webhookHandlerFunc(w http.ResponseWriter, r *http.R
 	for header, values := range r.Header {
 		headers[header] = strings.Join(values, ", ")
 	}
+	scheme := "http"
+	if r.TLS != nil {
+		scheme = "https"
+	}
 	wc.WebhookRequestService.Save(webhookId, structs.WebhookRequest{
 		ID:           headers["X-Request-Id"],
-		URL:          r.RequestURI,
+		URL:          fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI),
 		Method:       r.Method,
-		Host:         headers["X-Requested-By"],
+		Host:         r.RemoteAddr,
 		Size:         strconv.FormatInt(r.ContentLength, 10),
 		Headers:      headers,
 		QueryStrings: r.URL.Query(),

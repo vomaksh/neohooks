@@ -26,10 +26,10 @@ services:
       - redis
   nginx:
     image: nginx:1.20-alpine
-    ports:
-      - "8080:80"
     volumes:
       - "./nginx/nginx-dev.conf:/etc/nginx/nginx.conf"
+    ports:
+      - "8080:80"
     depends_on:
       - api
       - ui
