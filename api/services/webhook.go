@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
@@ -71,6 +72,28 @@ func (ws *WebhookService) Retrieve(id string, page int64) (*Webhook, error) {
 		Total:    webhookRequestsCount.Val(),
 		Rows:     rowCount,
 	}, nil
+}
+
+func (ws *WebhookService) Subscribe(id string) <-chan *redis.Message {
+	sub := ws.DB.Subscribe(ctx, fmt.Sprintf("webhook:%s:requests", id))
+	iface, err := sub.Receive(ctx)
+	if err != nil {
+		log.Println("unable to receive data")
+	}
+
+	switch iface.(type) {
+	case *redis.Subscription:
+		log.Println("Yeah, things somewhat work")
+	case *redis.Message:
+		log.Println("received message")
+	case *redis.Pong:
+		log.Println("pong received")
+	default:
+		log.Panicln("some error occured")
+	}
+
+	ch := sub.Channel()
+	return ch
 }
 
 func (ws *WebhookService) Save() (string, error) {

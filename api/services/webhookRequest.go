@@ -79,6 +79,7 @@ func (wrs *WebhookRequestService) Save(webhookId string, webhookRequest structs.
 		fmt.Sprintf("webhook:request:%s:headers", webhookRequest.ID),
 		webhookRequest.Headers,
 	)
+	wrs.DB.Publish(ctx, fmt.Sprintf("webhook:%s:requests", webhookId), webhookRequest.ID)
 }
 
 func (wrs *WebhookRequestService) Remove(id string) string {

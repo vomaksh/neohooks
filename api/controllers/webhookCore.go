@@ -3,10 +3,12 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/gorilla/websocket"
 	"github.com/iyorozuya/neohooks/api/services"
 	"github.com/iyorozuya/neohooks/api/structs"
 )
@@ -15,9 +17,15 @@ type WebhookCoreController struct {
 	WebhookService services.WebhookService
 }
 
+var WebsocketUpgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+}
+
 // Routes List of routes supported by webhook controller
 func (wc *WebhookCoreController) Routes() []structs.Route {
 	var baseURL string = "/api/webhook"
+	var wsBaseURL string = "/api/ws/webhook"
 	return []structs.Route{
 		{
 			Method:  http.MethodGet,
@@ -33,6 +41,11 @@ func (wc *WebhookCoreController) Routes() []structs.Route {
 			Method:  http.MethodGet,
 			Path:    fmt.Sprintf("%s/{id}", baseURL),
 			Handler: wc.retrieve,
+		},
+		{
+			Method:  http.MethodGet,
+			Path:    fmt.Sprintf("%s/{id}", wsBaseURL),
+			Handler: wc.subscribe,
 		},
 		{
 			Method:  http.MethodDelete,
@@ -98,6 +111,22 @@ func (wc *WebhookCoreController) retrieve(w http.ResponseWriter, r *http.Request
 			Rows:     webhook.Rows,
 		},
 	)
+}
+
+// GET /webhook/{id} - Get new requests via websocket
+func (wc *WebhookCoreController) subscribe(w http.ResponseWriter, r *http.Request) {
+	webhookId := chi.URLParam(r, "id")
+	conn, err := WebsocketUpgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	for msg := range wc.WebhookService.Subscribe(webhookId) {
+		if err := conn.WriteMessage(websocket.TextMessage, []byte(msg.Payload)); err != nil {
+			log.Println(err)
+			return
+		}
+	}
 }
 
 // DELETE /webhook/{id} - Remove existing webhook
