@@ -116,12 +116,23 @@ func (wc *WebhookCoreController) retrieve(w http.ResponseWriter, r *http.Request
 // GET /webhook/{id} - Get new requests via websocket
 func (wc *WebhookCoreController) subscribe(w http.ResponseWriter, r *http.Request) {
 	webhookId := chi.URLParam(r, "id")
+	webhookExists, err := wc.WebhookService.Exists(webhookId)
+	if err != nil || !webhookExists {
+		w.WriteHeader(422)
+		json.NewEncoder(w).Encode(
+			structs.ErrorResponse{
+				Errors: []string{fmt.Sprintf("Webhook %s doesn't exist", webhookId)},
+			},
+		)
+		return
+	}
 	conn, err := WebsocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 	for msg := range wc.WebhookService.Subscribe(webhookId) {
+		log.Println(msg)
 		if err := conn.WriteMessage(websocket.TextMessage, []byte(msg.Payload)); err != nil {
 			log.Println(err)
 			return

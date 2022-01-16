@@ -1,6 +1,7 @@
 package services
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"time"
@@ -79,7 +80,12 @@ func (wrs *WebhookRequestService) Save(webhookId string, webhookRequest structs.
 		fmt.Sprintf("webhook:request:%s:headers", webhookRequest.ID),
 		webhookRequest.Headers,
 	)
-	wrs.DB.Publish(ctx, fmt.Sprintf("webhook:%s:requests", webhookId), webhookRequest.ID)
+	webhookRequestJSON, _ := json.Marshal(structs.WebhookRequestList{
+		ID:        webhookRequest.ID,
+		Method:    webhookRequest.Method,
+		CreatedAt: webhookRequest.CreatedAt,
+	})
+	wrs.DB.Publish(ctx, fmt.Sprintf("webhook:%s:requests", webhookId), webhookRequestJSON)
 }
 
 func (wrs *WebhookRequestService) Remove(id string) string {

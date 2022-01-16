@@ -74,6 +74,14 @@ func (ws *WebhookService) Retrieve(id string, page int64) (*Webhook, error) {
 	}, nil
 }
 
+func (ws *WebhookService) Exists(id string) (bool, error) {
+	_, err := ws.DB.HGet(ctx, "webhooks", id).Result()
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 func (ws *WebhookService) Subscribe(id string) <-chan *redis.Message {
 	sub := ws.DB.Subscribe(ctx, fmt.Sprintf("webhook:%s:requests", id))
 	iface, err := sub.Receive(ctx)
@@ -83,11 +91,9 @@ func (ws *WebhookService) Subscribe(id string) <-chan *redis.Message {
 
 	switch iface.(type) {
 	case *redis.Subscription:
-		log.Println("Yeah, things somewhat work")
+		log.Printf("Redis subscription created for webhook %s\n", id)
 	case *redis.Message:
-		log.Println("received message")
 	case *redis.Pong:
-		log.Println("pong received")
 	default:
 		log.Panicln("some error occured")
 	}
