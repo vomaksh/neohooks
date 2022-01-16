@@ -28,8 +28,9 @@ services:
     image: nginx:1.20-alpine
     volumes:
       - "./nginx/nginx-dev.conf:/etc/nginx/nginx.conf"
+      - "./nginx/certs:/etc/nginx/certs"  
     ports:
-      - "8080:80"
+      - "8443:443"  
     depends_on:
       - api
       - ui

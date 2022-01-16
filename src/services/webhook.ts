@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { webhooksActions } from '../features/webhooks';
-import { Webhook, WebhookRequest, WebhookWithDetails } from '../types';
+import { Webhook, WebhookRequest, WebhookRequestCoreInfo, WebhookWithDetails } from '../types';
 import { webhookRequestActions } from '../features/webhookRequest';
 
 export const webhookAPI = createApi({
@@ -70,6 +70,24 @@ export const webhookAPI = createApi({
         return {
           error: findWebhookResult as FetchBaseQueryError,
         };
+      },
+      onCacheEntryAdded: async (params, api) => {
+        // Connecting to websocket for getting requests
+        const ws = new WebSocket(`wss://localhost:8443/api/ws/webhook/${params.webhookId}`);
+        await api.cacheDataLoaded;
+        ws.addEventListener('message', (event: MessageEvent<string>) => {
+          try {
+            const webhookRequest = JSON.parse(event.data) as WebhookRequestCoreInfo;
+            api.updateCachedData((draft) => {
+              draft.requests.unshift(webhookRequest);
+            });
+          } catch (error) {
+            console.error(error);
+          }
+        });
+        // Cleanup
+        await api.cacheEntryRemoved;
+        ws.close();
       },
     }),
     getWebhook: build.query<Webhook, string>({

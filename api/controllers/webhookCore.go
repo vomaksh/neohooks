@@ -20,6 +20,9 @@ type WebhookCoreController struct {
 var WebsocketUpgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
 // Routes List of routes supported by webhook controller
@@ -118,24 +121,22 @@ func (wc *WebhookCoreController) subscribe(w http.ResponseWriter, r *http.Reques
 	webhookId := chi.URLParam(r, "id")
 	webhookExists, err := wc.WebhookService.Exists(webhookId)
 	if err != nil || !webhookExists {
-		w.WriteHeader(422)
-		json.NewEncoder(w).Encode(
-			structs.ErrorResponse{
-				Errors: []string{fmt.Sprintf("Webhook %s doesn't exist", webhookId)},
-			},
-		)
+		log.Println("Asked webhook doesn't exist", err)
 		return
 	}
 	conn, err := WebsocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Println(err)
+		if _, ok := err.(websocket.HandshakeError); !ok {
+			log.Println("Websocket handle shake ", err)
+		}
 		return
 	}
+	defer conn.Close()
 	for msg := range wc.WebhookService.Subscribe(webhookId) {
-		log.Println(msg)
 		if err := conn.WriteMessage(websocket.TextMessage, []byte(msg.Payload)); err != nil {
-			log.Println(err)
-			return
+			conn.Close()
+			log.Println("Websocket unable to write message", err)
+			continue
 		}
 	}
 }

@@ -28,11 +28,12 @@
     "react-scripts": "5.0.0",
     "react-select": "^5.2.1",
     "redux-logger": "^3.0.6",
+    "socket.io-client": "^4.4.1",
     "typescript": "^4.5.4",
     "web-vitals": "^2.1.2"
   },
   "scripts": {
-    "start": "cross-env WDS_SOCKET_PORT=8080 react-scripts start",
+    "start": "cross-env WDS_SOCKET_PORT=8443 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
