@@ -18,9 +18,7 @@ type WebhookService struct {
 type Webhook struct {
 	ID       string
 	Requests []structs.WebhookRequestList
-	Page     int64
-	Total    int64
-	Rows     int64
+	Total    int
 }
 
 var ctx context.Context = context.Background()
@@ -42,18 +40,16 @@ func (ws *WebhookService) List() ([]string, error) {
 	return activeWebhooks, nil
 }
 
-func (ws *WebhookService) Retrieve(id string, page int64) (*Webhook, error) {
+func (ws *WebhookService) Retrieve(id string) (*Webhook, error) {
 	// Fetch webhook from HSet
 	webhook, err := ws.DB.HGet(ctx, "webhooks", id).Result()
 	if err != nil {
 		return nil, err
 	}
 	// Fetch requests of webhook
-	var rowCount int64 = 10
-	webhookRequestsCount := ws.DB.ZCount(ctx, fmt.Sprintf("webhook:%s:requests", id), "-inf", "+inf")
 	webhookRequests, err := ws.DB.ZRevRange(
 		ctx,
-		fmt.Sprintf("webhook:%s:requests", id), rowCount*page, rowCount*(page+1)-1,
+		fmt.Sprintf("webhook:%s:requests", id), 0, -1,
 	).Result()
 	if err != nil {
 		return nil, err
@@ -68,9 +64,7 @@ func (ws *WebhookService) Retrieve(id string, page int64) (*Webhook, error) {
 	return &Webhook{
 		ID:       id,
 		Requests: *webhookRequestsList,
-		Page:     page,
-		Total:    webhookRequestsCount.Val(),
-		Rows:     rowCount,
+		Total:    len(*webhookRequestsList),
 	}, nil
 }
 

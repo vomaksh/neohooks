@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
+import { Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
 import { MouseEvent } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
@@ -50,7 +50,7 @@ export function RequestList(props: RequestListProps) {
         });
       }
     } else if (nextPrevButton === NextPrevButton.NEXT) {
-      if (pageNumber <= Math.floor(pageMetadata.total / pageMetadata.rows)) {
+      if (pageNumber <= Math.floor(pageMetadata.total / 10)) {
         setSearchParam({
           page: `${pageNumber + 1}`,
         });
@@ -58,7 +58,7 @@ export function RequestList(props: RequestListProps) {
     }
   };
 
-  if (!requests || (requests.length === 0 && pageMetadata.page === 0)) {
+  if (!requests || requests.length === 0) {
     return (
       <Flex
         width={80}
@@ -79,28 +79,20 @@ export function RequestList(props: RequestListProps) {
     <Flex direction="column" width={80} bgColor={bgColor}>
       <Flex p={2} alignItems="center">
         <Flex alignItems="center">
-          <Button
-            size="sm"
-            disabled={pageMetadata.page === 0}
-            onClick={() => prevNextButtonHandler(NextPrevButton.PREVIOUS)}
-          >
+          <Button size="sm" onClick={() => prevNextButtonHandler(NextPrevButton.PREVIOUS)}>
             <Text>
               <FaChevronLeft />
             </Text>
           </Button>
         </Flex>
-        <Flex flex={1} justifyContent="center">
-          <Text fontSize="sm">Page {pageMetadata.page + 1}</Text>
+        <Flex flex={1} justifyContent="center" alignItems="center">
+          <Spinner size="sm" />
           <Text fontSize="sm" ml={1}>
-            ({pageMetadata.total} requests)
+            {pageMetadata.total} requests
           </Text>
         </Flex>
         <Flex alignItems="center">
-          <Button
-            size="sm"
-            disabled={pageMetadata.page === Math.floor(pageMetadata.total / pageMetadata.rows)}
-            onClick={() => prevNextButtonHandler(NextPrevButton.NEXT)}
-          >
+          <Button size="sm" onClick={() => prevNextButtonHandler(NextPrevButton.NEXT)}>
             <Text>
               <FaChevronRight />
             </Text>

@@ -38,23 +38,11 @@ export const webhookAPI = createApi({
       },
       invalidatesTags: ['Webhook'],
     }),
-    findWebhook: build.query<WebhookWithDetails, { webhookId: string; page: string }>({
+    findWebhook: build.query<WebhookWithDetails, { webhookId: string }>({
       queryFn: async (params, api, _extraOptions, fetchWithBQ) => {
         const findWebhookResult = await fetchWithBQ({
           url: `webhook/${params.webhookId}`,
           method: 'GET',
-          params: {
-            page: (() => {
-              try {
-                const page = parseInt(params.page, 10) - 1;
-                if (page < 0) return 0;
-                if (Number.isNaN(page)) return 0;
-                return page;
-              } catch (err) {
-                return 0;
-              }
-            })(),
-          },
         });
         if (findWebhookResult.error) throw findWebhookResult.error;
         const webhook = findWebhookResult.data as WebhookWithDetails;
@@ -80,8 +68,11 @@ export const webhookAPI = createApi({
             const webhookRequest = JSON.parse(event.data) as WebhookRequestCoreInfo;
             api.updateCachedData((draft) => {
               draft.requests.unshift(webhookRequest);
+              // eslint-disable-next-line no-param-reassign
+              draft.total += 1;
             });
           } catch (error) {
+            // eslint-disable-next-line no-console
             console.error(error);
           }
         });

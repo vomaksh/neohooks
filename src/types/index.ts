@@ -14,9 +14,7 @@ export interface Webhook {
 export interface WebhookWithDetails {
   id: string;
   requests: WebhookRequestCoreInfo[];
-  page: number;
   total: number;
-  rows: number;
 }
 
 /* Webhook Request List */
@@ -47,7 +45,5 @@ export enum RequestInfoTab {
 
 /* Pagination */
 export interface Pagination {
-  page: number;
   total: number;
-  rows: number;
 }

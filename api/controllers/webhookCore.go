@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/websocket"
@@ -92,11 +91,7 @@ func (wc *WebhookCoreController) create(w http.ResponseWriter, r *http.Request) 
 // GET /webhook/{id} - Get webhook by id
 func (wc *WebhookCoreController) retrieve(w http.ResponseWriter, r *http.Request) {
 	webhookId := chi.URLParam(r, "id")
-	page, err := strconv.Atoi(r.URL.Query().Get("page"))
-	if err != nil {
-		page = 0
-	}
-	webhook, err := wc.WebhookService.Retrieve(webhookId, int64(page))
+	webhook, err := wc.WebhookService.Retrieve(webhookId)
 	if err != nil {
 		w.WriteHeader(422)
 		json.NewEncoder(w).Encode(
@@ -109,9 +104,7 @@ func (wc *WebhookCoreController) retrieve(w http.ResponseWriter, r *http.Request
 		structs.RetrieveWebhookResponse{
 			ID:       webhook.ID,
 			Requests: webhook.Requests,
-			Page:     webhook.Page,
 			Total:    webhook.Total,
-			Rows:     webhook.Rows,
 		},
 	)
 }
@@ -127,16 +120,14 @@ func (wc *WebhookCoreController) subscribe(w http.ResponseWriter, r *http.Reques
 	conn, err := WebsocketUpgrader.Upgrade(w, r, nil)
 	if err != nil {
 		if _, ok := err.(websocket.HandshakeError); !ok {
-			log.Println("Websocket handle shake ", err)
+			log.Println("Websocket handle shake", err)
 		}
 		return
 	}
 	defer conn.Close()
 	for msg := range wc.WebhookService.Subscribe(webhookId) {
 		if err := conn.WriteMessage(websocket.TextMessage, []byte(msg.Payload)); err != nil {
-			conn.Close()
-			log.Println("Websocket unable to write message", err)
-			continue
+			return
 		}
 	}
 }

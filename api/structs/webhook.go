@@ -14,9 +14,7 @@ type CreateWebhookResponse struct {
 type RetrieveWebhookResponse struct {
 	ID       string               `json:"id"`
 	Requests []WebhookRequestList `json:"requests"`
-	Page     int64                `json:"page"`
-	Total    int64                `json:"total"`
-	Rows     int64                `json:"rows"`
+	Total    int                  `json:"total"`
 }
 
 // RemoveWebhookResponse Remove existing webhook
