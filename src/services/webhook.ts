@@ -3,6 +3,8 @@ import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { webhooksActions } from '../features/webhooks';
 import { Webhook, WebhookRequest, WebhookRequestCoreInfo, WebhookWithDetails } from '../types';
 import { webhookRequestActions } from '../features/webhookRequest';
+// eslint-disable-next-line import/no-cycle
+import { RootState } from '../store';
 
 export const webhookAPI = createApi({
   reducerPath: 'webhook',
@@ -48,7 +50,9 @@ export const webhookAPI = createApi({
         const webhook = findWebhookResult.data as WebhookWithDetails;
         if (webhook.requests && webhook.requests.length > 0) {
           const firstWebhookRequest = webhook.requests[0];
-          api.dispatch(webhookRequestActions.set(firstWebhookRequest.id));
+          if (!(api.getState() as RootState).webhookRequest) {
+            api.dispatch(webhookRequestActions.set(firstWebhookRequest.id));
+          }
         }
         if (findWebhookResult.data) {
           return {
