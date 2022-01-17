@@ -72,6 +72,11 @@ export const webhookAPI = createApi({
             const webhookRequest = JSON.parse(event.data) as WebhookRequestCoreInfo;
             api.updateCachedData((draft) => {
               draft.requests.unshift(webhookRequest);
+              // auto select first request of webhook received
+              if (draft.requests.length === 1) {
+                const firstWebhookRequest = draft.requests[0];
+                api.dispatch(webhookRequestActions.set(firstWebhookRequest.id));
+              }
               // eslint-disable-next-line no-param-reassign
               draft.total += 1;
             });

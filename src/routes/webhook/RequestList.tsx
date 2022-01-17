@@ -1,9 +1,8 @@
 import { Button, Flex, Spinner, Text, useColorModeValue, VStack } from '@chakra-ui/react';
-import { MouseEvent } from 'react';
+import { MouseEvent, useMemo } from 'react';
 import Scrollbars from 'react-custom-scrollbars-2';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom';
 import { webhookRequestActions } from '../../features/webhookRequest';
 import { RootState } from '../../store';
 import { Pagination, WebhookRequestCoreInfo } from '../../types';
@@ -23,10 +22,16 @@ enum NextPrevButton {
 export function RequestList(props: RequestListProps) {
   const { isFetching, requests, pageMetadata } = props;
 
-  const [searchParam, setSearchParam] = useSearchParams();
-
   // Redux hooks
   const currentRequest = useSelector((state: RootState) => state.webhookRequest);
+
+  const currentRequestIndex = useMemo(() => {
+    if (currentRequest && requests) {
+      return requests.findIndex((r) => r.id === currentRequest);
+    }
+    return -1;
+  }, [currentRequest, requests]);
+
   const dispatch = useDispatch();
 
   // style hooks
@@ -42,18 +47,11 @@ export function RequestList(props: RequestListProps) {
 
   // prev and next button handler
   const prevNextButtonHandler = (nextPrevButton: NextPrevButton) => {
-    const pageNumber = parseInt(searchParam.get('page') as string, 10);
-    if (nextPrevButton === NextPrevButton.PREVIOUS) {
-      if (pageNumber > 1) {
-        setSearchParam({
-          page: `${pageNumber - 1}`,
-        });
-      }
-    } else if (nextPrevButton === NextPrevButton.NEXT) {
-      if (pageNumber <= Math.floor(pageMetadata.total / 10)) {
-        setSearchParam({
-          page: `${pageNumber + 1}`,
-        });
+    if (requests) {
+      if (nextPrevButton === NextPrevButton.PREVIOUS) {
+        dispatch(webhookRequestActions.set(requests[currentRequestIndex - 1].id));
+      } else if (nextPrevButton === NextPrevButton.NEXT) {
+        dispatch(webhookRequestActions.set(requests[currentRequestIndex + 1].id));
       }
     }
   };
@@ -75,11 +73,16 @@ export function RequestList(props: RequestListProps) {
       </Flex>
     );
   }
+
   return (
     <Flex direction="column" width={80} bgColor={bgColor}>
       <Flex p={2} alignItems="center">
         <Flex alignItems="center">
-          <Button size="sm" onClick={() => prevNextButtonHandler(NextPrevButton.PREVIOUS)}>
+          <Button
+            disabled={currentRequestIndex === -1 || currentRequestIndex === 0}
+            size="sm"
+            onClick={() => prevNextButtonHandler(NextPrevButton.PREVIOUS)}
+          >
             <Text>
               <FaChevronLeft />
             </Text>
@@ -87,12 +90,16 @@ export function RequestList(props: RequestListProps) {
         </Flex>
         <Flex flex={1} justifyContent="center" alignItems="center">
           <Spinner size="sm" />
-          <Text fontSize="sm" ml={1}>
-            {pageMetadata.total} requests
+          <Text fontSize="sm" ml={1} fontWeight="medium">
+            {pageMetadata.total} REQUEST(S)
           </Text>
         </Flex>
         <Flex alignItems="center">
-          <Button size="sm" onClick={() => prevNextButtonHandler(NextPrevButton.NEXT)}>
+          <Button
+            size="sm"
+            disabled={currentRequestIndex === -1 || currentRequestIndex + 1 === requests?.length}
+            onClick={() => prevNextButtonHandler(NextPrevButton.NEXT)}
+          >
             <Text>
               <FaChevronRight />
             </Text>
