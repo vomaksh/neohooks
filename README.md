@@ -21,11 +21,8 @@ Neohooks is more focused on self hosting though you can use the live version of 
 ### Todos
 
 - [ ] Add error handling for every API endpoint on UI
-
 - [ ] Add unit tests on UI and API
-
 - [ ] Write a CLI client which can talk to API
-
 - [ ] Add integration tests
 
 I haven't added features in todos. 
