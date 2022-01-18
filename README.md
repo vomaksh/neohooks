@@ -52,4 +52,6 @@ Please give a ⭐️ if you found neohooks useful.
 Copyright © 2022 Akshay Mahajan.
 This project is MIT licensed.
 
+<hr />
+
 <p align="center">Made with ❤️ in India</p>
