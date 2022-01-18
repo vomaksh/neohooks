@@ -25,7 +25,7 @@ I haven't added features in todos. Please file an issue, if a feature is require
 
 ### Contributing
 
-If you found any bug or want to a feature then please file an issue.
+If you found any bug or want a feature then please file an issue.
 
 ## Author
 
