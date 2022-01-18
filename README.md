@@ -40,6 +40,7 @@ Please give a ⭐️ if you found neohooks useful.
 ## License
 
 Copyright © 2022 Akshay Mahajan.
+
 This project is MIT licensed.
 
 <hr />
