@@ -1,4 +1,4 @@
-<h1>Neohooks</h1>
+# [Neohooks](https://neohooks.site)
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
@@ -12,7 +12,7 @@
 
 Neohooks provides you a playground for webhook debugging and testing without a hassle. It provides unique and random URLs which can be used to debug and test webhooks and HTTP requests.
 
-Neohooks is inspired by [webhook.site](https://webhook.site). It is more focused on self hosting though you can use the live version of the app.
+Neohooks is inspired by [webhook.site](https://webhook.site). It is more focused on self hosting though you can use the [live version](https://neohooks.site).
 
 ### Todos
 
