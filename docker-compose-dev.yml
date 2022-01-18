@@ -1,0 +1,42 @@
+# docker-compose file for local dev (prod file will be added later)
+version: '3'
+services:
+  redis:
+    image: redis:6.2-alpine
+  ui:
+    image: "node:fermium-bullseye"
+    user: node
+    working_dir: /home/node/app
+    expose:
+      - 3000
+    volumes:
+      - ./:/home/node/app
+    command: "npm start"
+    depends_on:
+      - api
+  api:
+    image: golang:1.17
+    working_dir: /app
+    expose:
+      - 5000
+    volumes:
+      - ./:/app
+    command: go run main.go
+    depends_on:
+      - redis
+  nginx:
+    image: nginx:1.20-alpine
+    volumes:
+      - "./nginx/nginx-dev.conf:/etc/nginx/nginx.conf"
+      - "./nginx/certs:/etc/nginx/certs"  
+    ports:
+      - "8443:443"  
+    depends_on:
+      - api
+      - ui
+  redisinsight:
+    image: redislabs/redisinsight
+    ports:
+      - "8001:8001"
+    depends_on:
+      - redis

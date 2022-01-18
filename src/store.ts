@@ -3,6 +3,7 @@ import logger from 'redux-logger';
 import { webhooksSlice } from './features/webhooks';
 import { webhookRequestSlice } from './features/webhookRequest';
 import { syncToLocalStorage } from './middlewares/syncToLocalStorage';
+// eslint-disable-next-line import/no-cycle
 import { webhookAPI } from './services/webhook';
 
 export const store = configureStore({
