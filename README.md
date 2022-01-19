@@ -35,8 +35,9 @@ You need to have the following tools installed to run neohooks locally
 - docker
 - docker-compose
 
-To run the application locally run the following command in the root of the project
+To run the application locally run
 ```docker-compose -f docker-compose-dev.yml up -d```
+ at the root of the project.
 
 ### Contributing
 
