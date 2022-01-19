@@ -1,8 +1,11 @@
-# docker-compose file for local dev (prod file will be added later)
+# docker-compose file for local dev
 version: '3'
 services:
   redis:
     image: redis:6.2-alpine
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
   ui:
     image: "node:fermium-bullseye"
     user: node
