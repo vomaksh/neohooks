@@ -1,11 +1,9 @@
-<div align="center">
-  <img src="screenshots/logo.svg" height="72" width="72" />
-  <h1>
-    <a href="https://neohooks.site" target="_blank">
-      Neohooks
-    </a>
-  </h1>
-</div>
+<h1 align="center">
+  <img src="screenshots/logo.svg" height="24" width="24" />
+  <a href="https://neohooks.site" target="_blank">
+    Neohooks
+  </a>
+</h1>
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.5.1-gree.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
