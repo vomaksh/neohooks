@@ -6,6 +6,8 @@ import { webhookRequestActions } from '../features/webhookRequest';
 // eslint-disable-next-line import/no-cycle
 import { RootState } from '../store';
 
+const websocketURL = `${process.env.REACT_APP_WEBSOCKET_ENDPOINT as string}/api/ws`;
+
 export const webhookAPI = createApi({
   reducerPath: 'webhook',
   baseQuery: fetchBaseQuery({
@@ -65,7 +67,7 @@ export const webhookAPI = createApi({
       },
       onCacheEntryAdded: async (params, api) => {
         // Connecting to websocket for getting requests
-        const ws = new WebSocket(`wss://localhost:8443/api/ws/webhook/${params.webhookId}`);
+        const ws = new WebSocket(`${websocketURL}/webhook/${params.webhookId}`);
         await api.cacheDataLoaded;
         ws.addEventListener('message', (event: MessageEvent<string>) => {
           try {
