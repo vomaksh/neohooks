@@ -11,9 +11,9 @@ COPY *.go ./
 
 RUN go build -o app main.go
 
-FROM golang:1.17-alpine as production
+FROM golang:1.17 as production
 
 WORKDIR /app
 COPY --from=builder /app/app .
 
-CMD ["./app"]
+ENTRYPOINT ["./app"]

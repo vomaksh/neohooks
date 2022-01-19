@@ -1,4 +1,3 @@
-# docker-compose file for local dev (prod file will be added later)
 version: '3'
 services:
   redis:
@@ -20,14 +19,21 @@ services:
     depends_on:
       - redis
   nginx:
-    build:
-      context: .
-      dockerfile: DockerfileNginx
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
+    image: jonasal/nginx-certbot:latest
+    restart: unless-stopped
+    environment:
+      - CERTBOT_EMAIL
+    env_file:
+      - ./nginx/nginx-certbot.env
     ports:
-      - "80:80"
-      - "443:443"  
+      - 80:80
+      - 443:443
+    volumes:
+      - nginx_secrets:/etc/letsencrypt
+      - ./nginx/nginx.conf:/etc/nginx/user_conf.d/neohooks.site.conf
     depends_on:
       - api
       - ui
+      
+volumes:
+  nginx_secrets:

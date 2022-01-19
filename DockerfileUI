@@ -16,4 +16,4 @@ WORKDIR /home/node/app
 RUN npm install -g serve
 COPY --from=builder /home/node/app/build build
 
-CMD ["serve" "-s" "build"]
+ENTRYPOINT ["serve", "-s", "build"]
