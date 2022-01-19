@@ -1,6 +1,11 @@
-# [Neohooks](https://neohooks.site)
+<div style="text-align:center;">
+  <img src="screenshots/logo.svg" height="72" width="72" />
+  <a href="https://neohooks.site" target="_blank">
+    <h1>Neohooks</h1>
+  </a>
+</div>
 <p>
-  <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.5.1-gree.svg?cacheSeconds=2592000" />
   <a href="#" target="_blank">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
   </a>
@@ -8,13 +13,26 @@
 
 > Debug and test webhooks at ease
 
-### Introduction
+## Introduction
 
 Neohooks provides you a playground for webhook debugging and testing without a hassle. It provides unique and random URLs which can be used to debug and test webhooks and HTTP requests.
 
 Neohooks is inspired by [webhook.site](https://webhook.site). It is more focused on self hosting though you can use the [live version](https://neohooks.site).
 
-### Todos
+## Screenshots
+
+<div style="display:flex; justify-content:center;">
+  <div style="margin-right:8px; text-align:center">
+    <img src="screenshots/light-mode.png" style="border-style:solid;border-width:2px;border-radius:4px;border-color:gray;">
+    <p>In light mode</p>
+  </div>
+  <div style="text-align:center;">
+    <img src="screenshots/dark-mode.png" style="border-style:solid;border-width:2px;border-radius:4px;border-color:gray;">
+    <p>In dark mode</p>
+  </div>
+</div>
+
+## Todos
 
 - [ ] Remove hardcoded strings such as domains and add those to env file
 - [ ] Add error handling for every API endpoint on UI
@@ -25,7 +43,7 @@ Neohooks is inspired by [webhook.site](https://webhook.site). It is more focused
 
 I haven't added features in todos. Please file an issue, if a feature is required that you consider essential.
 
-### Local development
+## Local development
 
 This application consists of 2 docker-compose files namely docker-compose.yml and docker-compose-dev.yml.
 
@@ -39,7 +57,7 @@ To run the application locally run
 ```docker-compose -f docker-compose-dev.yml up -d```
  at the root of the project.
 
-### Contributing
+## Contributing
 
 If you found any bug or want a feature then please file an issue.
 
