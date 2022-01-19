@@ -4,19 +4,25 @@ services:
   redis:
     image: redis:6.2-alpine
   ui:
-    build: DockerfileUI
+    build: 
+      context: .
+      dockerfile: DockerfileUI
     expose:
       - 3000
     depends_on:
       - api
   api:
-    build: DockerfileAPI
+    build:
+      context: .
+      dockerfile: DockerfileAPI
     expose:
       - 5000
     depends_on:
       - redis
   nginx:
-    build: DockerfileNginx
+    build:
+      context: .
+      dockerfile: DockerfileNginx
     volumes:
       - /etc/letsencrypt:/etc/letsencrypt
     ports:
