@@ -16,12 +16,27 @@ Neohooks is inspired by [webhook.site](https://webhook.site). It is more focused
 
 ### Todos
 
+- [ ] Remove hardcoded strings such as domains and add those to env file
 - [ ] Add error handling for every API endpoint on UI
+- [ ] CI/CD 
 - [ ] Add unit tests on UI and API
 - [ ] Write a CLI client which can talk to API
 - [ ] Add integration tests
 
 I haven't added features in todos. Please file an issue, if a feature is required that you consider essential.
+
+### Local development
+
+This application consists of 2 docker-compose files namely docker-compose.yml and docker-compose-dev.yml.
+
+docker-compose-dev.yml is for running the application locally and docker-compose.yml is for self hosting the application.
+
+You need to have the following tools installed to run neohooks locally
+- docker
+- docker-compose
+
+To run the application locally run the following command in the root of the project
+```docker-compose -f docker-compose-dev.yml up -d```
 
 ### Contributing
 
