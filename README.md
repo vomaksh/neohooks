@@ -1,4 +1,4 @@
-<div style="text-align:center;">
+<div align="center">
   <img src="screenshots/logo.svg" height="72" width="72" />
   <a href="https://neohooks.site" target="_blank">
     <h1>Neohooks</h1>
@@ -21,16 +21,9 @@ Neohooks is inspired by [webhook.site](https://webhook.site). It is more focused
 
 ## Screenshots
 
-<div style="display:flex; justify-content:center;">
-  <div style="margin-right:8px; text-align:center">
-    <img src="screenshots/light-mode.png" style="border-style:solid;border-width:2px;border-radius:4px;border-color:gray;">
-    <p>In light mode</p>
-  </div>
-  <div style="text-align:center;">
-    <img src="screenshots/dark-mode.png" style="border-style:solid;border-width:2px;border-radius:4px;border-color:gray;">
-    <p>In dark mode</p>
-  </div>
-</div>
+In light mode                                                                     |  In dark mode
+:--------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------:
+![](https://github.com/iyorozuya/neohooks/raw/master/screenshots/light-mode.png)  |  ![](https://github.com/iyorozuya/neohooks/raw/master/screenshots/dark-mode.png)
 
 ## Todos
 
