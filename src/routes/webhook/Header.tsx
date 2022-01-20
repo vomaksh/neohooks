@@ -17,6 +17,8 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { CustomSelect, Option } from '../../common/Select';
 import HookImage from '../../assets/hook.svg';
+import GithubDarkImage from '../../assets/github-dark.png';
+import GithubLightImage from '../../assets/github-light.png';
 import { useCreateWebhookMutation, useGetWebhooksQuery } from '../../services/webhook';
 import { getFriendlyWebhookId } from '../../utils';
 
@@ -87,19 +89,38 @@ export function Header() {
             )}
           </Center>
           <HStack spacing={2}>
-            <Button
-              p={2}
-              bgColor="transparent"
-              color={colorMode === 'dark' ? 'orange.300' : 'blue.400'}
-              fontSize="xl"
-              rounded="full"
-              onClick={(e) => {
-                e.preventDefault();
-                toggleColorMode();
-              }}
-            >
-              {colorMode === 'dark' ? <IoIosSunny /> : <BsMoonStarsFill />}
-            </Button>
+            <Tooltip label="View source code">
+              <Button
+                p={2}
+                bgColor="transparent"
+                rounded="full"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open('https://github.com/iyorozuya/neohooks', '_blank');
+                }}
+              >
+                {colorMode === 'dark' ? (
+                  <img src={GithubLightImage} alt="GitHub" height="28" width="28" />
+                ) : (
+                  <img src={GithubDarkImage} alt="GitHub" height="28" width="28" />
+                )}
+              </Button>
+            </Tooltip>
+            <Tooltip label="Change mode">
+              <Button
+                p={2}
+                bgColor="transparent"
+                color={colorMode === 'dark' ? 'orange.300' : 'blue.400'}
+                fontSize="xl"
+                rounded="full"
+                onClick={(e) => {
+                  e.preventDefault();
+                  toggleColorMode();
+                }}
+              >
+                {colorMode === 'dark' ? <IoIosSunny /> : <BsMoonStarsFill />}
+              </Button>
+            </Tooltip>
           </HStack>
         </Flex>
       </Box>
