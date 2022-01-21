@@ -3,20 +3,16 @@ services:
   redis:
     image: redis:6.2-alpine
     volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - "./conf/redis/prod/redis.conf:/usr/local/etc/redis/redis.conf"
     command: redis-server /usr/local/etc/redis/redis.conf
   ui:
-    build: 
-      context: .
-      dockerfile: DockerfileUI
+    build: ui/
     expose:
       - 3000
     depends_on:
       - api
   api:
-    build:
-      context: .
-      dockerfile: DockerfileAPI
+    build: api/
     expose:
       - 5000
     depends_on:
@@ -28,7 +24,7 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/neohooks.site.conf
+      - ./conf/nginx/prod/nginx.conf:/etc/nginx/conf.d/neohooks.site.conf
       - certbot_etc:/etc/letsencrypt
       - certbot_var:/var/lib/letsencrypt
       - web_root:/var/www/html

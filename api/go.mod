@@ -1,4 +1,4 @@
-module github.com/iyorozuya/neohooks
+module github.com/iyorozuya/neohooks/api
 
 go 1.17
 

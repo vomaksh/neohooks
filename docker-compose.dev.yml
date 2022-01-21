@@ -4,7 +4,7 @@ services:
   redis:
     image: redis:6.2-alpine
     volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - "./conf/redis/dev/redis.conf:/usr/local/etc/redis/redis.conf"
     command: redis-server /usr/local/etc/redis/redis.conf
   ui:
     image: "node:fermium-bullseye"
@@ -13,7 +13,7 @@ services:
     expose:
       - 3000
     volumes:
-      - ./:/home/node/app
+      - ./ui:/home/node/app
     command: "npm start"
     depends_on:
       - api
@@ -23,15 +23,15 @@ services:
     expose:
       - 5000
     volumes:
-      - ./:/app
+      - ./api:/app
     command: go run main.go
     depends_on:
       - redis
   nginx:
-    image: nginx:1.20-alpine
-    volumes:
-      - "./nginx/nginx-dev.conf:/etc/nginx/nginx.conf"
-      - "./nginx/certs:/etc/nginx/certs"  
+    image: nginx:1.21-alpine
+    volumes:                                              
+      - "./conf/nginx/dev/nginx.conf:/etc/nginx/nginx.conf"
+      - "./conf/nginx/dev/certs:/etc/nginx/certs"                  
     ports:
       - "8443:443"  
     depends_on:
