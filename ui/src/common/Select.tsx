@@ -9,18 +9,18 @@ export type Option = {
 interface CustomSelectProps {
   options: Option[];
   placeholder: string;
-  // eslint-disable-next-line no-unused-vars
+  defaultValue: Option;
   onChange: (newValue: OnChangeValue<Option, boolean>, actionMeta: ActionMeta<Option>) => void;
 }
 
 export function CustomSelect(props: CustomSelectProps) {
   const { colorMode } = useColorMode();
-  const { options, placeholder, onChange } = props;
+  const { options, placeholder, defaultValue, onChange } = props;
   const setOptionColors = optionColor(colorMode);
   return (
     <Select
       placeholder={placeholder}
-      defaultValue={options[0]}
+      defaultValue={defaultValue}
       options={options}
       onChange={onChange}
       styles={{
@@ -63,7 +63,7 @@ export function CustomSelect(props: CustomSelectProps) {
         control: (provided) => ({
           ...provided,
           backgroundColor: colorMode === 'light' ? '#F8FAFC' : '#374151',
-          borderWidth: colorMode === 'light' ? 2 : 0,
+          borderWidth: 2,
           borderColor: colorMode === 'light' ? '#64748B' : 'transparent',
           borderRadius: 4,
           boxShadow: 'none',

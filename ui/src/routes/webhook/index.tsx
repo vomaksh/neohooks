@@ -18,14 +18,22 @@ export function Webhook() {
   const webhookRequestId = useSelector((state: RootState) => state.webhookRequest);
 
   // Fetch webhook by id
-  const { isLoading, isFetching, data } = useFindWebhookQuery({
-    webhookId: params.webhookId as string,
-  });
+  const { isLoading, isFetching, data } = useFindWebhookQuery(
+    {
+      webhookId: params.webhookId as string,
+    },
+    {
+      refetchOnMountOrArgChange: true,
+      skip: !params.webhookId,
+    }
+  );
 
   // Set webhook request id if got from params
   useEffect(() => {
     if (params.requestId) {
-      dispatch(webhookRequestActions.set(params.requestId));
+      if (params.requestId !== webhookRequestId) {
+        dispatch(webhookRequestActions.set(params.requestId));
+      }
     }
   }, [params.requestId]);
 
@@ -52,7 +60,7 @@ export function Webhook() {
   return (
     <Container maxWidth="full" padding={0} height="100vh">
       <Flex direction="column" height="full" width="full">
-        <Header />
+        <Header currentWebhookId={params.webhookId} />
         <Flex flex={1}>
           <RequestList
             isFetching={isFetching}
