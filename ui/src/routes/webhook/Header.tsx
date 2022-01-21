@@ -15,14 +15,19 @@ import { IoIosSunny } from 'react-icons/io';
 import { BsMoonStarsFill, BsPlusLg } from 'react-icons/bs';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { CustomSelect, Option } from '../../common/Select';
 import HookImage from '../../assets/hook.svg';
 import GithubDarkImage from '../../assets/github-dark.png';
 import GithubLightImage from '../../assets/github-light.png';
 import { useCreateWebhookMutation, useGetWebhooksQuery } from '../../services/webhook';
 import { getFriendlyWebhookId } from '../../utils';
+import { webhookRequestActions } from '../../features/webhookRequest';
 
-export function Header() {
+export function Header(props: { currentWebhookId: string | undefined }) {
+  const { currentWebhookId } = props;
+  const dispatch = useDispatch();
+
   //  Queries
   const { data: webhooks } = useGetWebhooksQuery();
 
@@ -49,23 +54,28 @@ export function Header() {
             <Image src={HookImage} alt="hook" ml={-1} mt={-1} height="42px" />
           </Flex>
           <Center flex="1">
-            {webhooks && (
+            {webhooks && currentWebhookId && (
               <>
                 <CustomSelect
                   placeholder="Select Webhook"
+                  defaultValue={{
+                    label: getFriendlyWebhookId(currentWebhookId),
+                    value: currentWebhookId,
+                  }}
                   options={webhooks.map((w) => ({
                     label: getFriendlyWebhookId(w),
                     value: w,
                   }))}
                   onChange={(newValue) => {
-                    navigate(`/w/${(newValue as Option).value}?page=1`);
+                    dispatch(webhookRequestActions.reset());
+                    navigate(`/w/${(newValue as Option).value}`);
                   }}
                 />
                 <Tooltip label="Create">
                   <Button
                     ml={2}
-                    borderWidth={colorMode === 'light' ? 2 : 0}
-                    borderColor="gray.500"
+                    borderWidth={2}
+                    borderColor={colorMode === 'light' ? 'gray.500' : 'transparent'}
                     backgroundColor={plusButtonBgColor}
                     color={plusButtonTextColor}
                     onClick={async (e) => {
