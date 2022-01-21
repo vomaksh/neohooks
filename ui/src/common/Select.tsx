@@ -9,20 +9,20 @@ export type Option = {
 interface CustomSelectProps {
   options: Option[];
   placeholder: string;
-  defaultValue: Option;
+  value: Option;
   onChange: (newValue: OnChangeValue<Option, boolean>, actionMeta: ActionMeta<Option>) => void;
 }
 
 export function CustomSelect(props: CustomSelectProps) {
   const { colorMode } = useColorMode();
-  const { options, placeholder, defaultValue, onChange } = props;
+  const { options, placeholder, value, onChange } = props;
   const setOptionColors = optionColor(colorMode);
   return (
     <Select
       placeholder={placeholder}
-      defaultValue={defaultValue}
       options={options}
       onChange={onChange}
+      value={value}
       styles={{
         option: (provided, state) => ({
           ...provided,

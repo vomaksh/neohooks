@@ -58,7 +58,7 @@ export function Header(props: { currentWebhookId: string | undefined }) {
               <>
                 <CustomSelect
                   placeholder="Select Webhook"
-                  defaultValue={{
+                  value={{
                     label: getFriendlyWebhookId(currentWebhookId),
                     value: currentWebhookId,
                   }}
