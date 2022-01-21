@@ -30,7 +30,7 @@ export function Webhook() {
 
   // Set webhook request id if got from params
   useEffect(() => {
-    if (params.requestId) {
+    if (params.webhookId && params.requestId) {
       if (params.requestId !== webhookRequestId) {
         dispatch(webhookRequestActions.set(params.requestId));
       }
@@ -55,7 +55,7 @@ export function Webhook() {
         }
       }
     }
-  }, [params.webhookId, webhookRequestId]);
+  }, [webhookRequestId]);
 
   return (
     <Container maxWidth="full" padding={0} height="100vh">
