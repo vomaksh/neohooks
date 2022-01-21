@@ -38,7 +38,7 @@ I haven't added features in todos. Please file an issue, if a feature is require
 
 ## Local development
 
-This application consists of 2 docker-compose files namely docker-compose.yml and docker-compose-dev.yml.
+This application consists of 2 docker-compose files namely docker-compose.yml and docker-compose.dev.yml.
 
 docker-compose-dev.yml is for running the application locally and docker-compose.yml is for self hosting the application.
 
@@ -47,7 +47,7 @@ You need to have the following tools installed to run neohooks locally
 - docker-compose
 
 To run the application locally run
-```docker-compose -f docker-compose-dev.yml up -d```
+```docker-compose -f docker-compose.dev.yml up -d```
  at the root of the project.
 
 ## Contributing
