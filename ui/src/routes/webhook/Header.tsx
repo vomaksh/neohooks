@@ -24,12 +24,14 @@ import { useCreateWebhookMutation, useGetWebhooksQuery } from '../../services/we
 import { getFriendlyWebhookId } from '../../utils';
 import { webhookRequestActions } from '../../features/webhookRequest';
 
-export function Header(props: { currentWebhookId: string | undefined }) {
-  const { currentWebhookId } = props;
-  const dispatch = useDispatch();
+interface HeaderProps {
+  currentWebhookId: string | undefined;
+  webhooks: string[] | undefined;
+}
 
-  //  Queries
-  const { data: webhooks } = useGetWebhooksQuery();
+export function Header(props: HeaderProps) {
+  const { currentWebhookId, webhooks } = props;
+  const dispatch = useDispatch();
 
   // Mutations
   const [createWebhook] = useCreateWebhookMutation();
@@ -47,16 +49,17 @@ export function Header(props: { currentWebhookId: string | undefined }) {
     <>
       <Box w="full" height={16} px="4" py="3" backgroundColor={bgColor}>
         <Flex flexDirection="row">
-          <Flex flex="none" alignItems="center">
+          <Flex data-testid="logo" flex="none" alignItems="center">
             <Heading size="lg" fontWeight="bold">
               Neo
             </Heading>
             <Image src={HookImage} alt="hook" ml={-1} mt={-1} height="42px" />
           </Flex>
-          <Center flex="1">
+          <Center flex="1" data-testid="webhooks-dropdown-container">
             {webhooks && currentWebhookId && (
               <>
                 <CustomSelect
+                  data-testid="webhooks-dropdown"
                   placeholder="Select Webhook"
                   value={{
                     label: getFriendlyWebhookId(currentWebhookId),
@@ -119,6 +122,7 @@ export function Header(props: { currentWebhookId: string | undefined }) {
             <Tooltip label="Change mode">
               <Button
                 p={2}
+                data-testid="change-color-mode-btn"
                 bgColor="transparent"
                 color={colorMode === 'dark' ? 'orange.300' : 'blue.400'}
                 fontSize="xl"

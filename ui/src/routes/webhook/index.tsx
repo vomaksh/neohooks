@@ -4,7 +4,7 @@ import { Container, Flex } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Header } from './Header';
 import { RequestList } from './RequestList';
-import { useFindWebhookQuery } from '../../services/webhook';
+import { useFindWebhookQuery, useGetWebhooksQuery } from '../../services/webhook';
 import { InfoContainer } from './InfoContainer';
 import { webhookRequestActions } from '../../features/webhookRequest';
 import { RootState } from '../../store';
@@ -17,6 +17,8 @@ export function Webhook() {
   // Get selected webhook request
   const webhookRequestId = useSelector((state: RootState) => state.webhookRequest);
 
+  // Get all webhooks
+  const { data: webhooks } = useGetWebhooksQuery();
   // Fetch webhook by id
   const { isLoading, isFetching, data } = useFindWebhookQuery(
     {
@@ -60,7 +62,7 @@ export function Webhook() {
   return (
     <Container maxWidth="full" padding={0} height="100vh">
       <Flex direction="column" height="full" width="full">
-        <Header currentWebhookId={params.webhookId} />
+        <Header currentWebhookId={params.webhookId} webhooks={webhooks} />
         <Flex flex={1}>
           <RequestList
             isFetching={isFetching}
