@@ -20,7 +20,7 @@ import { CustomSelect, Option } from '../../common/Select';
 import HookImage from '../../assets/hook.svg';
 import GithubDarkImage from '../../assets/github-dark.png';
 import GithubLightImage from '../../assets/github-light.png';
-import { useCreateWebhookMutation, useGetWebhooksQuery } from '../../services/webhook';
+import { useCreateWebhookMutation } from '../../services/webhook';
 import { getFriendlyWebhookId } from '../../utils';
 import { webhookRequestActions } from '../../features/webhookRequest';
 
@@ -59,7 +59,8 @@ export function Header(props: HeaderProps) {
             {webhooks && currentWebhookId && (
               <>
                 <CustomSelect
-                  data-testid="webhooks-dropdown"
+                  testId="webhooks-dropdown"
+                  name="webhook"
                   placeholder="Select Webhook"
                   value={{
                     label: getFriendlyWebhookId(currentWebhookId),

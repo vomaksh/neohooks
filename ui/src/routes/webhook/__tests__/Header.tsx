@@ -1,19 +1,15 @@
 import { findByText, render, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { MemoryRouter } from 'react-router-dom';
-import { store } from '../../../store';
+import { wrapComponent } from '../../../utils';
 import { Header } from '../Header';
 
-import '@testing-library/jest-dom';
+const webhooksList = [
+  'a88bace2-b0e3-43cc-9cca-a9713ec02bcf',
+  '9b9f705b-3731-433e-bb6f-59426451a997',
+];
+const currentWebhookId = webhooksList[0];
 
 test('header component with undefined props', async () => {
-  render(
-    <Provider store={store}>
-      <MemoryRouter>
-        <Header currentWebhookId={undefined} webhooks={undefined} />
-      </MemoryRouter>
-    </Provider>
-  );
+  render(wrapComponent(<Header currentWebhookId={undefined} webhooks={undefined} />));
 
   // Logo should be visible irrespective of undefined props
   const logo = screen.getByTestId('logo');
@@ -27,4 +23,18 @@ test('header component with undefined props', async () => {
   screen.getByTestId('change-color-mode-btn');
   // Check if view github repo button is visible
   screen.getByRole('button', { name: /GitHub/i });
+});
+
+test('header component with webhookId and webhooks list', async () => {
+  render(wrapComponent(<Header currentWebhookId={currentWebhookId} webhooks={webhooksList} />));
+
+  // Logo, color mode switcher and github repo link should be visible
+  const logo = screen.getByTestId('logo');
+  expect(await findByText(logo, 'Neo')).toBeVisible();
+  screen.getByTestId('change-color-mode-btn');
+  screen.getByRole('button', { name: /GitHub/i });
+
+  // Dropdown should be visible and required webhook should be selected
+  const webhooksDropdown = screen.getByTestId('webhooks-dropdown');
+  expect(webhooksDropdown).toHaveFormValues({ webhook: webhooksList[0] });
 });
