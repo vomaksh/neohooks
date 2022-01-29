@@ -1,4 +1,5 @@
 import requestUtils from './request';
+import testUtils from './test';
 
 /* Webhook */
 
@@ -28,3 +29,4 @@ export const getFriendlyWebhookRequestId = (id: string): string => {
 
 /* Request info methods */
 export const { createRequestTabData, getRequestInfoTabs } = requestUtils;
+export const { wrapComponent } = testUtils;

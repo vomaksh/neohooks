@@ -16,20 +16,22 @@ import { BsMoonStarsFill, BsPlusLg } from 'react-icons/bs';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { CustomSelect, Option } from '../../common/Select';
+import { CustomSelect } from '../../common/Select';
 import HookImage from '../../assets/hook.svg';
 import GithubDarkImage from '../../assets/github-dark.png';
 import GithubLightImage from '../../assets/github-light.png';
-import { useCreateWebhookMutation, useGetWebhooksQuery } from '../../services/webhook';
+import { useCreateWebhookMutation } from '../../services/webhook';
 import { getFriendlyWebhookId } from '../../utils';
 import { webhookRequestActions } from '../../features/webhookRequest';
 
-export function Header(props: { currentWebhookId: string | undefined }) {
-  const { currentWebhookId } = props;
-  const dispatch = useDispatch();
+interface HeaderProps {
+  currentWebhookId: string | undefined;
+  webhooks: string[] | undefined;
+}
 
-  //  Queries
-  const { data: webhooks } = useGetWebhooksQuery();
+export function Header(props: HeaderProps) {
+  const { currentWebhookId, webhooks } = props;
+  const dispatch = useDispatch();
 
   // Mutations
   const [createWebhook] = useCreateWebhookMutation();
@@ -47,13 +49,13 @@ export function Header(props: { currentWebhookId: string | undefined }) {
     <>
       <Box w="full" height={16} px="4" py="3" backgroundColor={bgColor}>
         <Flex flexDirection="row">
-          <Flex flex="none" alignItems="center">
+          <Flex data-testid="logo" flex="none" alignItems="center">
             <Heading size="lg" fontWeight="bold">
               Neo
             </Heading>
             <Image src={HookImage} alt="hook" ml={-1} mt={-1} height="42px" />
           </Flex>
-          <Center flex="1">
+          <Center flex="1" data-testid="webhooks-dropdown-container">
             {webhooks && currentWebhookId && (
               <>
                 <CustomSelect
@@ -66,9 +68,9 @@ export function Header(props: { currentWebhookId: string | undefined }) {
                     label: getFriendlyWebhookId(w),
                     value: w,
                   }))}
-                  onChange={(newValue) => {
+                  onChange={(value: string) => {
                     dispatch(webhookRequestActions.reset());
-                    navigate(`/w/${(newValue as Option).value}`);
+                    navigate(`/w/${value}`);
                   }}
                 />
                 <Tooltip label="Create">
@@ -119,6 +121,7 @@ export function Header(props: { currentWebhookId: string | undefined }) {
             <Tooltip label="Change mode">
               <Button
                 p={2}
+                data-testid="change-color-mode-btn"
                 bgColor="transparent"
                 color={colorMode === 'dark' ? 'orange.300' : 'blue.400'}
                 fontSize="xl"
@@ -134,7 +137,14 @@ export function Header(props: { currentWebhookId: string | undefined }) {
           </HStack>
         </Flex>
       </Box>
-      <Progress colorScheme="gray" height="0.5" size="xs" isIndeterminate={false} value={100} />
+      <Progress
+        colorScheme="gray"
+        height="0.5"
+        size="xs"
+        isIndeterminate={false}
+        value={100}
+        zIndex={-10}
+      />
     </>
   );
 }

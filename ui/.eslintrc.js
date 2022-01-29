@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es2021: true,
   },
-  plugins: ['react', '@typescript-eslint'],
+  plugins: ['react', '@typescript-eslint', 'testing-library'],
   extends: [
     'airbnb',
     'airbnb-typescript',
@@ -38,6 +38,11 @@ module.exports = {
     ],
     '@typescript-eslint/no-throw-literal': 'off',
     '@typescript-eslint/no-floating-promises': 'off',
+    "testing-library/await-async-query": "error",
+    "testing-library/no-await-sync-query": "error",
+    "testing-library/no-debugging-utils": "warn",
+    "testing-library/no-dom-import": "off",
+    "react/jsx-props-no-spreading": "off",
   },
   settings: {
     'import/resolver': {

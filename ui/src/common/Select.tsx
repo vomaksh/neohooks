@@ -1,5 +1,15 @@
-import Select, { ActionMeta, OnChangeValue } from 'react-select';
-import { useColorMode } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  List,
+  ListItem,
+  SlideFade,
+  useColorMode,
+  useColorModeValue,
+} from '@chakra-ui/react';
+import { useSelect } from 'downshift';
+import Scrollbars from 'react-custom-scrollbars-2';
+import { BiChevronDown } from 'react-icons/bi';
 
 export type Option = {
   label: string;
@@ -10,127 +20,83 @@ interface CustomSelectProps {
   options: Option[];
   placeholder: string;
   value: Option;
-  onChange: (newValue: OnChangeValue<Option, boolean>, actionMeta: ActionMeta<Option>) => void;
+  onChange: (value: string) => void;
 }
 
 export function CustomSelect(props: CustomSelectProps) {
+  const { options, value, placeholder, onChange } = props;
+  const {
+    isOpen,
+    closeMenu,
+    selectedItem,
+    selectItem,
+    getToggleButtonProps,
+    getMenuProps,
+    getItemProps,
+  } = useSelect({
+    items: options.map((option) => option.value),
+    defaultSelectedItem: value.value,
+  });
   const { colorMode } = useColorMode();
-  const { options, placeholder, value, onChange } = props;
-  const setOptionColors = optionColor(colorMode);
+  const dropdownButtonBorderColor = useColorModeValue('gray.500', 'transparent');
+  const dropdownButtonBgColor = useColorModeValue('gray.50', 'gray.700');
+  const dropdownBgColor = useColorModeValue('white', 'gray.700');
+  const selectedItemBackgroundColor = useColorModeValue('blue.100', 'blue.500');
   return (
-    <Select
-      placeholder={placeholder}
-      options={options}
-      onChange={onChange}
-      value={value}
-      styles={{
-        option: (provided, state) => ({
-          ...provided,
-          color: colorMode === 'light' ? '#334155' : provided.color,
-          backgroundColor: setOptionColors({
-            isSelected: state.isSelected,
-            lightMode: [
-              '#E2E8F0',
-              state.isFocused ? 'transparent' : (provided.backgroundColor as string),
-            ],
-            darkMode: ['#4B5563', '#374151'],
-          }),
-          '&:focus, &:active': {
-            backgroundColor: setOptionColors({
-              isSelected: state.isSelected,
-              lightMode: ['#E2E8F0', '#E2E8F0'],
-              darkMode: ['#6B7280', '#6B7280'],
-            }),
-            color: setOptionColors({
-              isSelected: state.isSelected,
-              lightMode: ['#334155', '#334155'],
-              darkMode: [provided.color as string, provided.color as string],
-            }),
-          },
-          '&:hover': {
-            backgroundColor: setOptionColors({
-              isSelected: state.isSelected,
-              lightMode: ['#BFDBFE', '#BFDBFE'],
-              darkMode: ['#6B7280', '#6B7280'],
-            }),
-            color: setOptionColors({
-              isSelected: state.isSelected,
-              lightMode: ['#334155', '#334155'],
-              darkMode: [provided.color as string, provided.color as string],
-            }),
-          },
-        }),
-        control: (provided) => ({
-          ...provided,
-          backgroundColor: colorMode === 'light' ? '#F8FAFC' : '#374151',
-          borderWidth: 2,
-          borderColor: colorMode === 'light' ? '#64748B' : 'transparent',
-          borderRadius: 4,
-          boxShadow: 'none',
-          '&:focus': {
-            borderColor: '#1F2937',
-            outline: 'none',
-            boxShadow: 'none',
-          },
-        }),
-        menu: (provided) => ({
-          ...provided,
-          backgroundColor: colorMode === 'light' ? '#F8FAFC' : '#374151',
-          padding: 0,
-          margin: '0 2',
-          borderRadius: 4,
-        }),
-        menuList: (provided) => ({
-          ...provided,
-          margin: 0,
-          padding: 0,
-          borderRadius: 4,
-        }),
-        indicatorSeparator: (provided) => ({
-          ...provided,
-          display: 'none',
-        }),
-        dropdownIndicator: (provided) => ({
-          ...provided,
-          color: colorMode === 'light' ? '#64748B' : '#CBD5E1',
-          '&:hover': {
-            color: colorMode === 'light' ? '#9CA3AF' : '#CBD5E1',
-          },
-          '&:focus': {
-            color: colorMode === 'light' ? '#9CA3AF' : '#CBD5E1',
-          },
-          '&:active': {
-            color: colorMode === 'light' ? '#9CA3AF' : '#CBD5E1',
-          },
-        }),
-        singleValue: (provided) => ({
-          ...provided,
-          color: colorMode === 'light' ? '#334155' : '#F9FAFB',
-        }),
-        input: (provided) => ({
-          ...provided,
-          color: colorMode === 'light' ? '#334155' : '#F9FAFB',
-        }),
-        container: (provided) => ({
-          ...provided,
-          width: 220,
-        }),
-      }}
-    />
+    <Box position="relative" width="210px">
+      <Button
+        {...getToggleButtonProps()}
+        variant="outline"
+        colorScheme="gray"
+        borderWidth={2}
+        backgroundColor={dropdownButtonBgColor}
+        borderColor={dropdownButtonBorderColor}
+        fontWeight="normal"
+        px={2}
+        width="full"
+        rightIcon={<BiChevronDown fontSize="20" />}
+      >
+        {!selectedItem ? placeholder : value.label}
+      </Button>
+      <SlideFade in={isOpen}>
+        <List
+          {...getMenuProps()}
+          mt={2}
+          position="absolute"
+          shadow="2xl"
+          width="full"
+          rounded="md"
+          backgroundColor={dropdownBgColor}
+          overflowY="auto"
+        >
+          <Scrollbars autoHeight autoHeightMax="150px">
+            {options.map((option, index) => (
+              <ListItem
+                {...getItemProps({ item: option.value, index })}
+                key={option.value}
+                px={2}
+                py={1.5}
+                cursor="pointer"
+                onClick={() => {
+                  selectItem(option.value);
+                  closeMenu();
+                  onChange(option.value);
+                }}
+                backgroundColor={
+                  selectedItem === option.value ? selectedItemBackgroundColor : dropdownBgColor
+                }
+                userSelect="none"
+                _hover={{
+                  backgroundColor: colorMode === 'light' ? 'gray.200' : 'gray.600',
+                  transition: 'background 300ms',
+                }}
+              >
+                {option.label}
+              </ListItem>
+            ))}
+          </Scrollbars>
+        </List>
+      </SlideFade>
+    </Box>
   );
-}
-
-interface ColorArgs {
-  isSelected: boolean;
-  lightMode: [string, string];
-  darkMode: [string, string];
-}
-
-function optionColor(colorMode: string) {
-  return ({ isSelected, lightMode, darkMode }: ColorArgs) => {
-    if (colorMode === 'light') {
-      return isSelected ? lightMode[0] : lightMode[1];
-    }
-    return isSelected ? darkMode[0] : darkMode[1];
-  };
 }
