@@ -42,6 +42,7 @@ module.exports = {
     "testing-library/no-await-sync-query": "error",
     "testing-library/no-debugging-utils": "warn",
     "testing-library/no-dom-import": "off",
+    "react/jsx-props-no-spreading": "off",
   },
   settings: {
     'import/resolver': {

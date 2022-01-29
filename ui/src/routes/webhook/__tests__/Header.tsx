@@ -16,7 +16,9 @@ test('header component with undefined props', async () => {
   expect(await findByText(logo, 'Neo')).toBeVisible();
 
   // Dropdown shouldn't be visible when currentWebhookId and webhooks are undefined
-  const webhooksDropdown = screen.queryByTestId('webhooks-dropdown');
+  const webhooksDropdown = screen.queryByRole('button', {
+    expanded: false,
+  });
   if (webhooksDropdown) throw Error("dropdown shouldn't be displayed if props are undefined");
 
   // Check if change color mode button is visible
@@ -35,6 +37,8 @@ test('header component with webhookId and webhooks list', async () => {
   screen.getByRole('button', { name: /GitHub/i });
 
   // Dropdown should be visible and required webhook should be selected
-  const webhooksDropdown = screen.getByTestId('webhooks-dropdown');
-  expect(webhooksDropdown).toHaveFormValues({ webhook: webhooksList[0] });
+  const webhooksDropdown = screen.getByRole('button', {
+    expanded: false,
+  });
+  expect(webhooksDropdown.textContent).toBe(`Webhook #${currentWebhookId.split('-')[0]}`);
 });

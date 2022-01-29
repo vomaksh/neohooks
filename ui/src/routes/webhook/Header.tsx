@@ -59,8 +59,6 @@ export function Header(props: HeaderProps) {
             {webhooks && currentWebhookId && (
               <>
                 <CustomSelect
-                  testId="webhooks-dropdown"
-                  name="webhook"
                   placeholder="Select Webhook"
                   value={{
                     label: getFriendlyWebhookId(currentWebhookId),
@@ -70,9 +68,9 @@ export function Header(props: HeaderProps) {
                     label: getFriendlyWebhookId(w),
                     value: w,
                   }))}
-                  onChange={(newValue) => {
+                  onChange={(value: string) => {
                     dispatch(webhookRequestActions.reset());
-                    navigate(`/w/${(newValue as Option).value}`);
+                    navigate(`/w/${value}`);
                   }}
                 />
                 <Tooltip label="Create">
@@ -139,7 +137,14 @@ export function Header(props: HeaderProps) {
           </HStack>
         </Flex>
       </Box>
-      <Progress colorScheme="gray" height="0.5" size="xs" isIndeterminate={false} value={100} />
+      <Progress
+        colorScheme="gray"
+        height="0.5"
+        size="xs"
+        isIndeterminate={false}
+        value={100}
+        zIndex={-10}
+      />
     </>
   );
 }
