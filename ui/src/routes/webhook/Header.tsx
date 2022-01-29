@@ -16,7 +16,7 @@ import { BsMoonStarsFill, BsPlusLg } from 'react-icons/bs';
 import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { CustomSelect, Option } from '../../common/Select';
+import { CustomSelect } from '../../common/Select';
 import HookImage from '../../assets/hook.svg';
 import GithubDarkImage from '../../assets/github-dark.png';
 import GithubLightImage from '../../assets/github-light.png';
