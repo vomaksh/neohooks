@@ -1,18 +1,21 @@
-package services
+package webhook_request
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/url"
 	"time"
 
 	redis "github.com/go-redis/redis/v8"
-	"github.com/iyorozuya/neohooks/api/structs"
+	"github.com/iyorozuya/neohooks/pkg/structs"
 )
 
 type WebhookRequestService struct {
 	DB *redis.Client
 }
+
+var ctx context.Context = context.Background()
 
 func (wrs *WebhookRequestService) Retrieve(id string) (*structs.WebhookRequest, error) {
 	wr, err := wrs.DB.HGetAll(ctx, fmt.Sprintf("webhook:request:%s", id)).Result()
@@ -44,7 +47,7 @@ func (wrs *WebhookRequestService) Retrieve(id string) (*structs.WebhookRequest, 
 	}, nil
 }
 
-func (wrs *WebhookRequestService) retrieveByIDs(ids []string) (*[]structs.WebhookRequestList, error) {
+func (wrs *WebhookRequestService) RetrieveByIDs(ids []string) (*[]structs.WebhookRequestList, error) {
 	webhookRequests := make([]structs.WebhookRequestList, 0)
 	for _, id := range ids {
 		webhookRequestDetails, err := wrs.DB.HMGet(ctx, fmt.Sprintf("webhook:request:%s", id), "id", "method", "createdAt").Result()

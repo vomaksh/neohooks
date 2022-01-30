@@ -8,9 +8,10 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-redis/redis/v8"
 	"github.com/iyorozuya/neohooks/api/controllers"
-	"github.com/iyorozuya/neohooks/api/db"
-	"github.com/iyorozuya/neohooks/api/services"
-	"github.com/iyorozuya/neohooks/api/structs"
+	"github.com/iyorozuya/neohooks/pkg/db"
+	"github.com/iyorozuya/neohooks/pkg/structs"
+	"github.com/iyorozuya/neohooks/pkg/webhook"
+	"github.com/iyorozuya/neohooks/pkg/webhook_request"
 )
 
 type Controller struct {
@@ -52,19 +53,17 @@ func main() {
 
 func bootstrap(db *redis.Client, r *chi.Mux) {
 	// Initialize all services
-	webhookRequestService := services.WebhookRequestService{DB: db}
-	webhookService := services.WebhookService{
+	webhookRequestService := webhook_request.WebhookRequestService{DB: db}
+	webhookService := webhook.WebhookService{
 		DB:                    db,
 		WebhookRequestService: webhookRequestService,
 	}
 	// Initialize controllers and DI services respectively
-	webhookController := controllers.WebhookController{WebhookRequestService: webhookRequestService}
-	webhookCoreController := controllers.WebhookCoreController{WebhookService: webhookService}
+	webhookController := controllers.WebhookCoreController{WebhookService: webhookService}
 	webhookRequestController := controllers.WebhookRequestController{WebhookRequestService: webhookRequestService}
 	// register routes
 	registerRoutes(r, []Controller{
 		{routes: webhookController.Routes},
-		{routes: webhookCoreController.Routes},
 		{routes: webhookRequestController.Routes},
 	})
 }

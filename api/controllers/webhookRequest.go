@@ -6,12 +6,12 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/iyorozuya/neohooks/api/services"
-	"github.com/iyorozuya/neohooks/api/structs"
+	"github.com/iyorozuya/neohooks/pkg/structs"
+	"github.com/iyorozuya/neohooks/pkg/webhook_request"
 )
 
 type WebhookRequestController struct {
-	WebhookRequestService services.WebhookRequestService
+	WebhookRequestService webhook_request.WebhookRequestService
 }
 
 // Routes List of routes supported by webhook controller

@@ -3,73 +3,140 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"log"
 	"net/http"
-	"strconv"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/iyorozuya/neohooks/api/services"
-	"github.com/iyorozuya/neohooks/api/structs"
+	"github.com/gorilla/websocket"
+	"github.com/iyorozuya/neohooks/pkg/structs"
+	"github.com/iyorozuya/neohooks/pkg/webhook"
 )
 
-type WebhookController struct {
-	WebhookRequestService services.WebhookRequestService
+type WebhookCoreController struct {
+	WebhookService webhook.WebhookService
 }
 
-func (wc *WebhookController) Routes() []structs.Route {
+var WebsocketUpgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
+// Routes List of routes supported by webhook controller
+func (wc *WebhookCoreController) Routes() []structs.Route {
+	var baseURL string = "/api/webhook"
+	var wsBaseURL string = "/api/ws/webhook"
 	return []structs.Route{
 		{
 			Method:  http.MethodGet,
-			Path:    "/{id}",
-			Handler: wc.webhookHandlerFunc,
+			Path:    baseURL,
+			Handler: wc.list,
 		},
 		{
 			Method:  http.MethodPost,
-			Path:    "/{id}",
-			Handler: wc.webhookHandlerFunc,
+			Path:    baseURL,
+			Handler: wc.create,
+		},
+		{
+			Method:  http.MethodGet,
+			Path:    fmt.Sprintf("%s/{id}", baseURL),
+			Handler: wc.retrieve,
+		},
+		{
+			Method:  http.MethodGet,
+			Path:    fmt.Sprintf("%s/{id}", wsBaseURL),
+			Handler: wc.subscribe,
+		},
+		{
+			Method:  http.MethodDelete,
+			Path:    fmt.Sprintf("%s/{id}", baseURL),
+			Handler: wc.remove,
 		},
 	}
 }
 
-func (wc *WebhookController) webhookHandlerFunc(w http.ResponseWriter, r *http.Request) {
+// GET /webhook - List all webhooks
+func (wc *WebhookCoreController) list(w http.ResponseWriter, r *http.Request) {
+	webhooks, err := wc.WebhookService.List()
+	if err != nil {
+		w.WriteHeader(422)
+		json.NewEncoder(w).Encode(
+			structs.ErrorResponse{
+				Errors: []string{"unable to fetch webhooks"},
+			})
+		return
+	}
+	json.NewEncoder(w).Encode(structs.ListWebhooksResponse{
+		Webhooks: webhooks,
+	})
+}
+
+// POST /webhook - Create new webhook
+func (wc *WebhookCoreController) create(w http.ResponseWriter, r *http.Request) {
+	webhook, err := wc.WebhookService.Save()
+	if err != nil {
+		json.NewEncoder(w).Encode(
+			structs.ErrorResponse{
+				Errors: []string{"error creating webhook"},
+			},
+		)
+	}
+	json.NewEncoder(w).Encode(structs.CreateWebhookResponse{
+		ID: webhook,
+	})
+}
+
+// GET /webhook/{id} - Get webhook by id
+func (wc *WebhookCoreController) retrieve(w http.ResponseWriter, r *http.Request) {
 	webhookId := chi.URLParam(r, "id")
-	headers := make(map[string]string)
-	// Extract request body if method == POST
-	var requestBody []byte
-	if r.Method == "POST" {
-		reqBody, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			w.WriteHeader(422)
-			json.NewEncoder(w).Encode(
-				structs.ErrorResponse{
-					Errors: []string{"unable to read body"},
-				},
-			)
+	webhook, err := wc.WebhookService.Retrieve(webhookId)
+	if err != nil {
+		w.WriteHeader(422)
+		json.NewEncoder(w).Encode(
+			structs.ErrorResponse{
+				Errors: []string{err.Error()},
+			},
+		)
+	}
+	json.NewEncoder(w).Encode(
+		structs.RetrieveWebhookResponse{
+			ID:       webhook.ID,
+			Requests: webhook.Requests,
+			Total:    webhook.Total,
+		},
+	)
+}
+
+// GET /webhook/{id} - Get new requests via websocket
+func (wc *WebhookCoreController) subscribe(w http.ResponseWriter, r *http.Request) {
+	webhookId := chi.URLParam(r, "id")
+	webhookExists, err := wc.WebhookService.Exists(webhookId)
+	if err != nil || !webhookExists {
+		log.Println("Asked webhook doesn't exist", err)
+		return
+	}
+	conn, err := WebsocketUpgrader.Upgrade(w, r, nil)
+	if err != nil {
+		if _, ok := err.(websocket.HandshakeError); !ok {
+			log.Println("Websocket handle shake", err)
+		}
+		return
+	}
+	defer conn.Close()
+	for msg := range wc.WebhookService.Subscribe(webhookId) {
+		if err := conn.WriteMessage(websocket.TextMessage, []byte(msg.Payload)); err != nil {
 			return
 		}
-		requestBody = reqBody
 	}
-	// Get webhook-request headers
-	for header, values := range r.Header {
-		headers[header] = strings.Join(values, ", ")
-	}
-	scheme := "http"
-	if r.TLS != nil {
-		scheme = "https"
-	}
-	wc.WebhookRequestService.Save(webhookId, structs.WebhookRequest{
-		ID:           headers["X-Request-Id"],
-		URL:          fmt.Sprintf("%s://%s%s", scheme, r.Host, r.RequestURI),
-		Method:       r.Method,
-		Host:         r.RemoteAddr,
-		Size:         strconv.FormatInt(r.ContentLength, 10),
-		Headers:      headers,
-		QueryStrings: r.URL.Query(),
-		Body:         string(requestBody),
-		CreatedAt:    headers["X-Request-Time"],
-	})
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"message": "Ok!",
+}
+
+// DELETE /webhook/{id} - Remove existing webhook
+func (wc *WebhookCoreController) remove(w http.ResponseWriter, r *http.Request) {
+	webhookId := chi.URLParam(r, "id")
+	webhook := wc.WebhookService.Remove(webhookId)
+	json.NewEncoder(w).Encode(structs.RemoveWebhookResponse{
+		ID: webhook,
 	})
 }
