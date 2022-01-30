@@ -46,15 +46,15 @@ func main() {
 		Password: "",
 	})
 
-	if err := http.ListenAndServe(":5000", r); err != nil {
-		log.Fatalf("%s\n", err)
-	}
-
 	wru := WebhookUtil{
 		WebhookRequestService: webhook_request.WebhookRequestService{DB: rdb},
 	}
 
 	r.HandleFunc("/{id}", wru.HandleFunc)
+
+	if err := http.ListenAndServe(":5000", r); err != nil {
+		log.Fatalf("%s\n", err)
+	}
 }
 
 func (wru *WebhookUtil) HandleFunc(w http.ResponseWriter, r *http.Request) {

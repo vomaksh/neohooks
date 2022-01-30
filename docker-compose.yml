@@ -19,6 +19,14 @@ services:
       - 5000
     depends_on:
       - redis
+  webhook:                           
+    build: 
+      context: .
+      dockerfile: services/webhook/Dockerfile
+    expose:
+      - 5000
+    depends_on:
+      - redis
   nginx:
     image: nginx:1.21-alpine
     restart: unless-stopped

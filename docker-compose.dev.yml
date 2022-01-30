@@ -27,6 +27,16 @@ services:
     command: go run api/main.go
     depends_on:
       - redis
+  webhook:
+    image: golang:1.17
+    working_dir: /app
+    expose:
+      - 5000
+    volumes:
+      - ./:/app
+    command: go run services/webhook/main.go
+    depends_on:
+      - redis
   nginx:
     image: nginx:1.21-alpine
     volumes:                                              
@@ -36,6 +46,7 @@ services:
       - "8443:443"  
     depends_on:
       - api
+      - webhook
       - ui
   redisinsight:
     image: redislabs/redisinsight
