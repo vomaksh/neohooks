@@ -6,8 +6,8 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 
+COPY pkg/ pkg/
 COPY api/ api/
-RUN ls -l
 
 RUN go build -o app api/main.go
 

@@ -1,4 +1,4 @@
-package services
+package webhook
 
 import (
 	"context"
@@ -7,12 +7,13 @@ import (
 
 	"github.com/go-redis/redis/v8"
 	"github.com/google/uuid"
-	"github.com/iyorozuya/neohooks/api/structs"
+	"github.com/iyorozuya/neohooks/pkg/structs"
+	"github.com/iyorozuya/neohooks/pkg/webhook_request"
 )
 
 type WebhookService struct {
 	DB                    *redis.Client
-	WebhookRequestService WebhookRequestService
+	WebhookRequestService webhook_request.WebhookRequestService
 }
 
 type Webhook struct {
@@ -54,7 +55,7 @@ func (ws *WebhookService) Retrieve(id string) (*Webhook, error) {
 	if err != nil {
 		return nil, err
 	}
-	webhookRequestsList, err := ws.WebhookRequestService.retrieveByIDs(webhookRequests)
+	webhookRequestsList, err := ws.WebhookRequestService.RetrieveByIDs(webhookRequests)
 	if err != nil {
 		return nil, err
 	}
