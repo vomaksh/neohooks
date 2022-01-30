@@ -13,7 +13,7 @@ services:
     expose:
       - 3000
     volumes:
-      - ./ui:/home/node/app
+      - ./web:/home/node/app
     command: "npm start"
     depends_on:
       - api
@@ -23,8 +23,8 @@ services:
     expose:
       - 5000
     volumes:
-      - ./api:/app
-    command: go run main.go
+      - ./:/app
+    command: go run api/main.go
     depends_on:
       - redis
   nginx:

@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-cd ui && npm run lint -- src/ && npm test -- --watchAll=false --passWithNoTests
+./scripts/run-tests.sh

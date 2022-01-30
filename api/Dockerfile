@@ -6,9 +6,10 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 
-COPY . .
+COPY api/ api/
+RUN ls -l
 
-RUN go build -o app main.go
+RUN go build -o app api/main.go
 
 FROM golang:1.17 as production
 
