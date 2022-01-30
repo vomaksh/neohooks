@@ -6,13 +6,15 @@ services:
       - "./conf/redis/prod/redis.conf:/usr/local/etc/redis/redis.conf"
     command: redis-server /usr/local/etc/redis/redis.conf
   ui:
-    build: ui/
+    build: web/
     expose:
       - 3000
     depends_on:
       - api
   api:
-    build: api/
+    build: 
+      context: .
+      dockerfile: api/Dockerfile
     expose:
       - 5000
     depends_on:
