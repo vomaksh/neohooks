@@ -4,25 +4,22 @@ services:
     image: redis:6.2-alpine
     volumes:
       - "./conf/redis/prod/redis.conf:/usr/local/etc/redis/redis.conf"
+      - redis_data:/data
     command: redis-server /usr/local/etc/redis/redis.conf
   ui:
-    build: web/
+    image: ghcr.io/iyorozuya/neohooks-ui
     expose:
       - 3000
     depends_on:
       - api
   api:
-    build: 
-      context: .
-      dockerfile: api/Dockerfile
+    image: ghcr.io/iyorozuya/neohooks-api
     expose:
       - 5000
     depends_on:
       - redis
-  webhook:                           
-    build: 
-      context: .
-      dockerfile: services/webhook/Dockerfile
+  webhook:
+    image: ghcr.io/iyorozuya/neohooks-webhook-service
     expose:
       - 5000
     depends_on:
@@ -54,6 +51,7 @@ services:
       - nginx
 
 volumes:
+  redis_data:
   certbot_etc:
   certbot_var:
   web_root:

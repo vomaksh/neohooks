@@ -2,7 +2,7 @@ name: Build neohooks components
 on:
   push: 
     branches:
-      - dev
+      - master
 
 env:
   REGISTRY: ghcr.io
