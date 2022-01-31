@@ -43,7 +43,7 @@ export function CustomSelect(props: CustomSelectProps) {
   const dropdownBgColor = useColorModeValue('white', 'gray.700');
   const selectedItemBackgroundColor = useColorModeValue('blue.100', 'blue.500');
   return (
-    <Box position="relative" width="210px">
+    <Box position="relative" width="210px" zIndex={300}>
       <Button
         {...getToggleButtonProps()}
         variant="outline"
@@ -58,6 +58,7 @@ export function CustomSelect(props: CustomSelectProps) {
       >
         {!selectedItem ? placeholder : value.label}
       </Button>
+
       <SlideFade in={isOpen}>
         <List
           {...getMenuProps()}
@@ -70,30 +71,31 @@ export function CustomSelect(props: CustomSelectProps) {
           overflowY="auto"
         >
           <Scrollbars autoHeight autoHeightMax="150px">
-            {options.map((option, index) => (
-              <ListItem
-                {...getItemProps({ item: option.value, index })}
-                key={option.value}
-                px={2}
-                py={1.5}
-                cursor="pointer"
-                onClick={() => {
-                  selectItem(option.value);
-                  closeMenu();
-                  onChange(option.value);
-                }}
-                backgroundColor={
-                  selectedItem === option.value ? selectedItemBackgroundColor : dropdownBgColor
-                }
-                userSelect="none"
-                _hover={{
-                  backgroundColor: colorMode === 'light' ? 'gray.200' : 'gray.600',
-                  transition: 'background 300ms',
-                }}
-              >
-                {option.label}
-              </ListItem>
-            ))}
+            {isOpen &&
+              options.map((option, index) => (
+                <ListItem
+                  {...getItemProps({ item: option.value, index })}
+                  key={option.value}
+                  px={2}
+                  py={1.5}
+                  cursor="pointer"
+                  onClick={() => {
+                    selectItem(option.value);
+                    closeMenu();
+                    onChange(option.value);
+                  }}
+                  backgroundColor={
+                    selectedItem === option.value ? selectedItemBackgroundColor : dropdownBgColor
+                  }
+                  userSelect="none"
+                  _hover={{
+                    backgroundColor: colorMode === 'light' ? 'gray.200' : 'gray.600',
+                    transition: 'background 300ms',
+                  }}
+                >
+                  {option.label}
+                </ListItem>
+              ))}
           </Scrollbars>
         </List>
       </SlideFade>
