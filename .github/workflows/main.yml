@@ -1,0 +1,12 @@
+name: GitHub
+on:
+  push: 
+    branches:
+      - dev
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run a command
+        run: echo Chintu, World!
