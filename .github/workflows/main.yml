@@ -47,7 +47,7 @@ jobs:
       - name: Build and push UI
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: web/
           file: web/Dockerfile
           push: true
           tags: ${{ steps.ui_meta.outputs.tags }}
