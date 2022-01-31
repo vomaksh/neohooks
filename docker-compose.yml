@@ -7,19 +7,19 @@ services:
       - redis_data:/data
     command: redis-server /usr/local/etc/redis/redis.conf
   ui:
-    image: ghcr.io/iyorozuya/neohooks-ui
+    image: ghcr.io/iyorozuya/neohooks-ui:master
     expose:
       - 3000
     depends_on:
       - api
   api:
-    image: ghcr.io/iyorozuya/neohooks-api
+    image: ghcr.io/iyorozuya/neohooks-api:master
     expose:
       - 5000
     depends_on:
       - redis
   webhook:
-    image: ghcr.io/iyorozuya/neohooks-webhook-service
+    image: ghcr.io/iyorozuya/neohooks-webhook-service:master
     expose:
       - 5000
     depends_on:
