@@ -13,10 +13,12 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/iyorozuya/neohooks/pkg/db"
 	"github.com/iyorozuya/neohooks/pkg/structs"
+	"github.com/iyorozuya/neohooks/pkg/webhook"
 	"github.com/iyorozuya/neohooks/pkg/webhook_request"
 )
 
 type WebhookUtil struct {
+	WebhookService        webhook.WebhookService
 	WebhookRequestService webhook_request.WebhookRequestService
 }
 
@@ -46,8 +48,13 @@ func main() {
 		Password: "",
 	})
 
+	wrs := webhook_request.WebhookRequestService{DB: rdb}
 	wru := WebhookUtil{
-		WebhookRequestService: webhook_request.WebhookRequestService{DB: rdb},
+		WebhookService: webhook.WebhookService{
+			DB:                    rdb,
+			WebhookRequestService: wrs,
+		},
+		WebhookRequestService: wrs,
 	}
 
 	r.HandleFunc("/{id}", wru.HandleFunc)
@@ -59,6 +66,16 @@ func main() {
 
 func (wru *WebhookUtil) HandleFunc(w http.ResponseWriter, r *http.Request) {
 	webhookId := chi.URLParam(r, "id")
+	webhookExists, err := wru.WebhookService.Exists(webhookId)
+	if err != nil || !webhookExists {
+		w.WriteHeader(422)
+		json.NewEncoder(w).Encode(
+			structs.ErrorResponse{
+				Errors: []string{"webhook doesn't exists"},
+			},
+		)
+		return
+	}
 	headers := make(map[string]string)
 	// Extract request body if method == POST
 	var requestBody []byte
