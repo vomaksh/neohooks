@@ -42,10 +42,18 @@ func (ws *WebhookService) List() ([]string, error) {
 }
 
 func (ws *WebhookService) Retrieve(id string) (*Webhook, error) {
+	// Check if webhook id is a valid uuid
+	_, err := uuid.Parse(id)
+	if err != nil {
+		return nil, fmt.Errorf("invalid webhook %s", id)
+	}
 	// Fetch webhook from HSet
 	webhook, err := ws.DB.HGet(ctx, "webhooks", id).Result()
 	if err != nil {
-		return nil, err
+		webhook, err = ws.Save(id)
+		if err != nil {
+			return nil, err
+		}
 	}
 	// Fetch requests of webhook
 	webhookRequests, err := ws.DB.ZRevRange(
@@ -97,8 +105,7 @@ func (ws *WebhookService) Subscribe(id string) <-chan *redis.Message {
 	return ch
 }
 
-func (ws *WebhookService) Save() (string, error) {
-	webhookId := uuid.Must(uuid.NewRandom()).String()
+func (ws *WebhookService) Save(webhookId string) (string, error) {
 	_, err := ws.DB.HSet(ctx, "webhooks", map[string]string{
 		webhookId: "true",
 	}).Result()

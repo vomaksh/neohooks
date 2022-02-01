@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
 	"github.com/iyorozuya/neohooks/pkg/structs"
 	"github.com/iyorozuya/neohooks/pkg/webhook"
@@ -75,13 +76,15 @@ func (wc *WebhookCoreController) list(w http.ResponseWriter, r *http.Request) {
 
 // POST /webhook - Create new webhook
 func (wc *WebhookCoreController) create(w http.ResponseWriter, r *http.Request) {
-	webhook, err := wc.WebhookService.Save()
+	webhookId := uuid.Must(uuid.NewRandom()).String()
+	webhook, err := wc.WebhookService.Save(webhookId)
 	if err != nil {
 		json.NewEncoder(w).Encode(
 			structs.ErrorResponse{
 				Errors: []string{"error creating webhook"},
 			},
 		)
+		return
 	}
 	json.NewEncoder(w).Encode(structs.CreateWebhookResponse{
 		ID: webhook,
@@ -99,6 +102,7 @@ func (wc *WebhookCoreController) retrieve(w http.ResponseWriter, r *http.Request
 				Errors: []string{err.Error()},
 			},
 		)
+		return
 	}
 	json.NewEncoder(w).Encode(
 		structs.RetrieveWebhookResponse{
