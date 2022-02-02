@@ -2,18 +2,13 @@
 
 import { RequestInfoTab, WebhookRequest } from '../types';
 
-function getRequestInfoTabs(method: string) {
-  switch (method.toUpperCase()) {
-    case 'GET':
-      return [RequestInfoTab.DETAILS, RequestInfoTab.HEADERS, RequestInfoTab.QUERY_STRINGS];
-    default:
-      return [
-        RequestInfoTab.DETAILS,
-        RequestInfoTab.HEADERS,
-        RequestInfoTab.QUERY_STRINGS,
-        RequestInfoTab.BODY,
-      ];
-  }
+function getRequestInfoTabs() {
+  return [
+    RequestInfoTab.DETAILS,
+    RequestInfoTab.HEADERS,
+    RequestInfoTab.QUERY_STRINGS,
+    RequestInfoTab.BODY,
+  ];
 }
 
 function detailsTabData(request: WebhookRequest) {

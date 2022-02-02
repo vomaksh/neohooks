@@ -6,6 +6,17 @@ services:
       - "./conf/redis/prod/redis.conf:/usr/local/etc/redis/redis.conf"
       - redis_data:/data
     command: redis-server /usr/local/etc/redis/redis.conf
+  nginx:
+    image: nginx:1.21-alpine
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./conf/nginx/prod/nginx.conf:/etc/nginx/conf.d/neohooks.site.conf
+      - certbot_etc:/etc/letsencrypt
+      - certbot_var:/var/lib/letsencrypt
+      - web_root:/var/www/html
   ui:
     image: ghcr.io/iyorozuya/neohooks-ui:master
     expose:
@@ -24,20 +35,6 @@ services:
       - 5000
     depends_on:
       - redis
-  nginx:
-    image: nginx:1.21-alpine
-    restart: unless-stopped
-    ports:
-      - 80:80
-      - 443:443
-    volumes:
-      - ./conf/nginx/prod/nginx.conf:/etc/nginx/conf.d/neohooks.site.conf
-      - certbot_etc:/etc/letsencrypt
-      - certbot_var:/var/lib/letsencrypt
-      - web_root:/var/www/html
-    depends_on:
-      - api
-      - ui
   certbot:
     image: certbot/certbot
     environment:

@@ -16,6 +16,16 @@ export const getColorByRequestMethod = (method: string) => {
     case 'GET':
       return 'green';
     case 'POST':
+      return 'cyan';
+    case 'PATCH':
+      return 'yellow';
+    case 'DELETE':
+      return 'red';
+    case 'PUT':
+      return 'orange';
+    case 'OPTIONS':
+      return 'gray';
+    case 'HEAD':
       return 'blue';
     default:
       return 'gray';
