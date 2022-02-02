@@ -129,7 +129,9 @@ func (wc *WebhookCoreController) subscribe(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	defer conn.Close()
-	for msg := range wc.WebhookService.Subscribe(webhookId) {
+	pubSub := wc.WebhookService.Subscribe(webhookId)
+	defer pubSub.Close()
+	for msg := range pubSub.Channel() {
 		if err := conn.WriteMessage(websocket.TextMessage, []byte(msg.Payload)); err != nil {
 			return
 		}

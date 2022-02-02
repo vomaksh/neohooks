@@ -67,7 +67,7 @@ export function RequestList(props: RequestListProps) {
         height="full"
       >
         <VStack flex="1" py={4}>
-          <Spinner size="lg" />
+          <Spinner size="lg" colorScheme="gray" />
           <Text fontSize="md">Waiting for first request</Text>
         </VStack>
       </Flex>
@@ -89,7 +89,7 @@ export function RequestList(props: RequestListProps) {
           </Button>
         </Flex>
         <Flex flex={1} justifyContent="center" alignItems="center">
-          <Spinner size="sm" />
+          <Spinner size="sm" color="gray.500" />
           <Text fontSize="sm" ml={1} fontWeight="medium">
             {pageMetadata.total} REQUEST(S)
           </Text>

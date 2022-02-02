@@ -77,20 +77,15 @@ func (wru *WebhookUtil) HandleFunc(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	headers := make(map[string]string)
-	// Extract request body if method == POST
-	var requestBody []byte
-	if r.Method == "POST" {
-		reqBody, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			w.WriteHeader(422)
-			json.NewEncoder(w).Encode(
-				structs.ErrorResponse{
-					Errors: []string{"unable to read body"},
-				},
-			)
-			return
-		}
-		requestBody = reqBody
+	requestBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(422)
+		json.NewEncoder(w).Encode(
+			structs.ErrorResponse{
+				Errors: []string{"unable to read body"},
+			},
+		)
+		return
 	}
 	// Get webhook-request headers
 	for header, values := range r.Header {

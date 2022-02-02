@@ -85,9 +85,9 @@ func (ws *WebhookService) Exists(id string) (bool, error) {
 	return true, nil
 }
 
-func (ws *WebhookService) Subscribe(id string) <-chan *redis.Message {
-	sub := ws.DB.Subscribe(ctx, fmt.Sprintf("webhook:%s:requests", id))
-	iface, err := sub.Receive(ctx)
+func (ws *WebhookService) Subscribe(id string) *redis.PubSub {
+	pubSub := ws.DB.Subscribe(ctx, fmt.Sprintf("webhook:%s:requests", id))
+	iface, err := pubSub.Receive(ctx)
 	if err != nil {
 		log.Println("unable to receive data")
 	}
@@ -101,8 +101,7 @@ func (ws *WebhookService) Subscribe(id string) <-chan *redis.Message {
 		log.Panicln("some error occured")
 	}
 
-	ch := sub.Channel()
-	return ch
+	return pubSub
 }
 
 func (ws *WebhookService) Save(webhookId string) (string, error) {

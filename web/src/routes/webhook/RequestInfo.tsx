@@ -172,7 +172,7 @@ function RequestInfoTabs(props: {
     <Box width="full" shadow="md" rounded="base" bgColor={bgColor}>
       <Tabs index={currentTab} onChange={(i) => setCurrentTab(i)}>
         <TabList>
-          {getRequestInfoTabs(request.method).map((tab) => (
+          {getRequestInfoTabs().map((tab) => (
             <Tab key={tab} textTransform="capitalize">
               {tab}
             </Tab>
