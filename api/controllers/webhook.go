@@ -130,10 +130,25 @@ func (wc *WebhookCoreController) subscribe(w http.ResponseWriter, r *http.Reques
 	}
 	defer conn.Close()
 	pubSub := wc.WebhookService.Subscribe(webhookId)
-	defer pubSub.Close()
-	for msg := range pubSub.Channel() {
-		if err := conn.WriteMessage(websocket.TextMessage, []byte(msg.Payload)); err != nil {
+	go func() {
+		defer pubSub.Close()
+		for msg := range pubSub.Channel() {
+			if err := conn.WriteMessage(websocket.TextMessage, []byte(msg.Payload)); err != nil {
+				return
+			}
+		}
+	}()
+	for {
+		messageType, p, err := conn.ReadMessage()
+		if err != nil {
+			log.Println(err)
 			return
+		}
+		if string(p) == "PING" {
+			if err := conn.WriteMessage(messageType, []byte("PONG")); err != nil {
+				log.Println(err)
+				return
+			}
 		}
 	}
 }
