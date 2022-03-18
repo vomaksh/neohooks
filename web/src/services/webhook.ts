@@ -68,9 +68,13 @@ export const webhookAPI = createApi({
       onCacheEntryAdded: async (params, api) => {
         // Connecting to websocket for getting requests
         const ws = new WebSocket(`${websocketURL}/webhook/${params.webhookId}`);
+        const websocketPinger = setInterval(() => {
+          ws.send('PING');
+        }, 30000);
         await api.cacheDataLoaded;
         ws.addEventListener('message', (event: MessageEvent<string>) => {
           try {
+            if (event.data === 'PONG') return;
             const webhookRequest = JSON.parse(event.data) as WebhookRequestCoreInfo;
             api.updateCachedData((draft) => {
               draft.requests.unshift(webhookRequest);
@@ -86,6 +90,9 @@ export const webhookAPI = createApi({
             // eslint-disable-next-line no-console
             console.error(error);
           }
+        });
+        ws.addEventListener('close', () => {
+          clearInterval(websocketPinger);
         });
         // Cleanup
         await api.cacheEntryRemoved;
